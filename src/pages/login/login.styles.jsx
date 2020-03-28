@@ -1,0 +1,52 @@
+import styled from 'styled-components'
+
+export const LoginPageContainer = styled.div`
+  height: 100%;
+  width: 100%;
+  background-color: ${({ theme }) => theme.bg};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+`
+
+export const LoginFormContainer = styled.div`
+  display: grid;
+  grid-gap: 20px;
+  justify-content: center;
+  justify-items: center;
+  align-items: center;
+  max-width: 450px;
+`
+
+export const Heading = styled.h1`
+  font-family: 'archiasemibold';
+  color: ${({ theme }) => theme.form.headingText};
+  padding-left: 6px;
+  width: 340px;
+`
+
+export const LoginForm = styled.form`
+  background-color: ${({ theme }) => theme.form.bg};
+  padding: 22px;
+  border-radius: 20px;
+  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.1);
+  display: grid;
+  grid-gap: 14px;
+  width: 340px;
+
+  button {
+    margin-top: 16px;
+  }
+`
+export const RegisterMessageContainer = styled.div`
+  font-family: 'archiasemibold';
+  display: flex;
+  justify-content: center;
+  div {
+    color: ${({ theme }) => theme.text};
+    span {
+      margin-right: 2px;
+    }
+  }
+`

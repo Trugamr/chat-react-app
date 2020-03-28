@@ -39,6 +39,13 @@ export const Input = styled.input`
   }
 
   ${({ error }) => (error ? errorStyles : '')}
+
+  /* Change Autocomplete styles in Chrome*/
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover, 
+  &:-webkit-autofill:focus {
+    -webkit-text-fill-color: ${({ theme }) => theme.form.field.text};
+  }
 `
 
 export const InputIconContainer = styled.span`

@@ -4,33 +4,56 @@ import ReactDOM from 'react-dom'
 import './index.scss'
 import App from './App'
 import * as serviceWorker from './serviceWorker'
+import { auth } from './firebase/firebase.utils'
 
 import CustomThemeProvider from './components/custom-theme-provider/custom-theme-provider.component'
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  withRouter
+} from 'react-router-dom'
 import RegisterPage from './pages/register/register.component'
 import LoginPage from './pages/login/login.component'
 
 import store from './redux/store'
 
-const Root = () => {
-  return (
-    <Provider store={store}>
-      <CustomThemeProvider>
-        <Router>
+class Root extends React.Component {
+  unsubscribeFromAuth = null
+
+  componentDidMount() {
+    const { history } = this.props
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        history.push('/')
+      }
+    })
+  }
+
+  componentWillUnmount() {}
+
+  render() {
+    return (
+      <Provider store={store}>
+        <CustomThemeProvider>
           <Switch>
             <Route exact path="/" component={App} />
             <Route exact path="/register" component={RegisterPage} />
             <Route exact path="/login" component={LoginPage} />
           </Switch>
-        </Router>
-      </CustomThemeProvider>
-    </Provider>
-  )
+        </CustomThemeProvider>
+      </Provider>
+    )
+  }
 }
+
+const RootWithRouter = withRouter(Root)
 
 ReactDOM.render(
   <React.StrictMode>
-    <Root />
+    <Router>
+      <RootWithRouter />
+    </Router>
   </React.StrictMode>,
   document.getElementById('root')
 )

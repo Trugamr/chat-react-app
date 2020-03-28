@@ -1,5 +1,5 @@
 import React from 'react'
-import { auth } from '../../firebase/firebase.utils'
+import { auth, database } from '../../firebase/firebase.utils'
 import md5 from 'md5'
 
 import {
@@ -17,7 +17,6 @@ import CustomLink from '../../components/custom-link/custom-link.component'
 
 import { FaUserAlt, FaLock } from 'react-icons/fa'
 import { MdEmail } from 'react-icons/md'
-import firebase from 'firebase'
 
 class RegisterPage extends React.Component {
   state = {
@@ -27,7 +26,7 @@ class RegisterPage extends React.Component {
     confirmPassword: '',
     errors: [],
     loading: false,
-    usersRef: firebase.database().ref('users')
+    usersRef: database.ref('users')
   }
 
   isFormValid = () => {
@@ -84,7 +83,7 @@ class RegisterPage extends React.Component {
           .then(() => {
             this.saveUser(createdUser).then(() => {
               console.log('user saved')
-              this.setState({ loading: false })
+              // register success
             })
           })
           .catch(err => {
