@@ -2,11 +2,13 @@ import React from 'react'
 
 import { FormErrorContainer, Heading, Error } from './form.error.styles'
 
-const FormError = ({ error = 'some error occured' }) => {
+const FormError = ({ errors = [{ message: 'some error occured' }] }) => {
   return (
     <FormErrorContainer>
       <Heading>Error</Heading>
-      <Error>{error}</Error>
+      {errors.map((error, i) => (
+        <Error key={i}>{error.message}</Error>
+      ))}
     </FormErrorContainer>
   )
 }

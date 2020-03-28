@@ -1,4 +1,5 @@
 import React from 'react'
+import { auth } from '../../firebase/firebase.utils'
 
 import {
   RegisterPageContainer,
@@ -17,40 +18,142 @@ import { FaUserAlt, FaLock } from 'react-icons/fa'
 import { MdEmail } from 'react-icons/md'
 
 class RegisterPage extends React.Component {
+  state = {
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    errors: [],
+    loading: false
+  }
+
+  isFormValid = () => {
+    const errors = []
+    let error
+
+    if (this.isFormEmpty(this.state)) {
+      error = { message: 'Fill in all fields.' }
+      this.setState({ errors: errors.concat(error) })
+    } else if (!this.isPasswordValid(this.state)) {
+      error = { message: 'Password is invalid.' }
+      this.setState({ errors: errors.concat(error) })
+    } else {
+      return true
+    }
+  }
+
+  isFormEmpty = ({ username, email, password, confirmPassword }) => {
+    return (
+      !username.length ||
+      !email.length ||
+      !password.length ||
+      !confirmPassword.length
+    )
+  }
+
+  isPasswordValid = ({ password, confirmPassword }) => {
+    if (password.length < 6 || confirmPassword.length < 6) return false
+    else if (password !== confirmPassword) return false
+    else return true
+  }
+
+  handleSubmit = event => {
+    event.preventDefault()
+
+    const { email, password, loading } = this.state
+
+    if (!this.isFormValid() || loading) return
+
+    this.setState({ errors: [], loading: true })
+
+    auth
+      .createUserWithEmailAndPassword(email, password)
+      .then(createdUser => {
+        console.log(createdUser)
+      })
+      .catch(err => {
+        console.error(err)
+        this.setState(({ errors }) => ({ errors: errors.concat(err) }))
+      })
+      .finally(() => {
+        this.setState({ loading: false })
+      })
+  }
+
+  handleChange = event => {
+    this.setState({
+      [event.target.name]: event.target.value
+    })
+  }
+
+  handleInputError(errors, inputName) {
+    return errors.some(error => error.message.toLowerCase().includes(inputName))
+  }
+
   render() {
+    const {
+      username,
+      email,
+      password,
+      confirmPassword,
+      errors,
+      loading
+    } = this.state
+
     return (
       <RegisterPageContainer>
         <RegisterFormContainer>
           <Heading>Register</Heading>
-          <RegisterForm>
-            <CustomInput Icon={FaUserAlt} placeholder="Username" required />
+          <RegisterForm onSubmit={this.handleSubmit}>
+            <CustomInput
+              Icon={FaUserAlt}
+              name="username"
+              placeholder="Username"
+              onChange={this.handleChange}
+              value={username}
+            />
             <CustomInput
               Icon={MdEmail}
               type="email"
+              name="email"
               placeholder="Email"
-              required
+              onChange={this.handleChange}
+              value={email}
+              error={this.handleInputError(errors, 'email')}
             />
             <CustomInput
               Icon={FaLock}
               type="password"
+              name="password"
               placeholder="Password"
-              required
+              onChange={this.handleChange}
+              value={password}
+              error={this.handleInputError(errors, 'password')}
             />
             <CustomInput
               Icon={FaLock}
               type="password"
+              name="confirmPassword"
               placeholder="Confirm Password"
-              required
+              onChange={this.handleChange}
+              value={confirmPassword}
+              error={this.handleInputError(errors, 'password')}
             />
-            <CustomButton type="submit" fontSize="18px">
+            <CustomButton
+              disabled={loading}
+              loading={loading}
+              height="50px"
+              type="submit"
+              fontSize="18px"
+            >
               Submit
             </CustomButton>
           </RegisterForm>
-          <FormError />
+          {errors.length ? <FormError errors={errors} /> : null}
           <LoginMessageContainer>
             <div>
               <span>Already a user?</span>
-              <CustomLink to="/login">Login</CustomLink>
+              <CustomLink to="/login">&nbsp;Login&nbsp;</CustomLink>
             </div>
           </LoginMessageContainer>
         </RegisterFormContainer>

@@ -1,4 +1,5 @@
 import firebase from 'firebase/app'
+import 'firebase/analytics'
 import 'firebase/auth'
 import 'firebase/database'
 import 'firebase/storage'
@@ -19,5 +20,6 @@ firebase.analytics()
 
 export const auth = firebase.auth()
 export const database = firebase.database()
+export const storage = firebase.storage()
 
 export default firebase

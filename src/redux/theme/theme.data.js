@@ -2,6 +2,7 @@
 
 export const colors = {
   red: '#FF073A',
+  littleLightRed: 'rgba(255, 7, 58, 0.5)',
   lightRed: 'rgba(255, 7, 58, 0.12)',
   green: '#28A745',
   lightGreen: 'rgba(40, 167, 69, 0.12)',
@@ -34,12 +35,14 @@ export const light = {
     },
     error: {
       bg: colors.lightRed,
-      text: colors.red
+      text: colors.red,
+      placeholder: colors.littleLightRed
     }
   },
   button: {
     text: colors.white,
-    bg: colors.blue
+    bg: colors.blue,
+    bgDisabled: colors.lightBlue
   },
   link: {
     bg: colors.lightBlue,

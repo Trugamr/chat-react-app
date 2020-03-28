@@ -1,4 +1,14 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
+
+const errorStyles = css`
+  box-shadow: 0px 0px 0px 3px ${({ theme }) => theme.form.error.placeholder};
+  background-color: ${({ theme }) => theme.form.error.bg};
+  color: ${({ theme }) => theme.form.error.text};
+
+  &::placeholder {
+    color: ${({ theme }) => theme.form.error.placeholder};
+  }
+`
 
 export const InputContainer = styled.div`
   width: 100%;
@@ -23,8 +33,12 @@ export const Input = styled.input`
 
   &:focus {
     outline: none;
-    box-shadow: 0px 0px 0px 3px ${({ theme }) => theme.form.field.focusBorder};
+    box-shadow: 0px 0px 0px 3px
+      ${({ theme, error }) =>
+        error ? theme.form.error.text : theme.form.field.focusBorder};
   }
+
+  ${({ error }) => (error ? errorStyles : '')}
 `
 
 export const InputIconContainer = styled.span`
