@@ -4,9 +4,23 @@ import "./index.scss";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import RegisterPage from "./pages/register/register.component";
+import LoginPage from "./pages/login/login.component";
+
+const Root = () => (
+  <Router>
+    <Switch>
+      <Route exact path="/" component={App} />
+      <Route exact path="/register" component={RegisterPage} />
+      <Route exact path="/login" component={LoginPage} />
+    </Switch>
+  </Router>
+);
+
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Root />
   </React.StrictMode>,
   document.getElementById("root")
 );
