@@ -4,7 +4,7 @@ export const Button = styled.button`
   border: 0px;
   background-color: ${({ theme }) => theme.button.bg};
   color: ${({ theme }) => theme.button.text};
-  padding: 20px;
+  padding: 12px;
   font-family: 'archiasemibold';
   font-size: ${({ fontSize }) => fontSize};
   width: 100%;

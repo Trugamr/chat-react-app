@@ -12,19 +12,21 @@ import LoginPage from './pages/login/login.component'
 
 import store from './redux/store'
 
-const Root = () => (
-  <Provider store={store}>
-    <CustomThemeProvider>
-      <Router>
-        <Switch>
-          <Route exact path="/" component={App} />
-          <Route exact path="/register" component={RegisterPage} />
-          <Route exact path="/login" component={LoginPage} />
-        </Switch>
-      </Router>
-    </CustomThemeProvider>
-  </Provider>
-)
+const Root = () => {
+  return (
+    <Provider store={store}>
+      <CustomThemeProvider>
+        <Router>
+          <Switch>
+            <Route exact path="/" component={App} />
+            <Route exact path="/register" component={RegisterPage} />
+            <Route exact path="/login" component={LoginPage} />
+          </Switch>
+        </Router>
+      </CustomThemeProvider>
+    </Provider>
+  )
+}
 
 ReactDOM.render(
   <React.StrictMode>

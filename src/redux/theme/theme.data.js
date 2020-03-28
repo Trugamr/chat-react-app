@@ -19,24 +19,31 @@ export const colors = {
 
 //--LIGHT--//
 export const light = {
+  bg: colors.lightest,
+  text: colors.gray,
   form: {
     bg: colors.white,
     headingText: colors.gray,
     text: colors.gray,
-    link: {
-      bg: colors.lightBlue,
-      text: colors.blue
-    },
     field: {
       icon: colors.gray,
       text: colors.gray,
       bg: colors.lightest,
-      placeholder: colors.littleLightGray
+      placeholder: colors.littleLightGray,
+      focusBorder: colors.blue
+    },
+    error: {
+      bg: colors.lightRed,
+      text: colors.red
     }
   },
   button: {
     text: colors.white,
     bg: colors.blue
+  },
+  link: {
+    bg: colors.lightBlue,
+    text: colors.blue
   }
 }
 
