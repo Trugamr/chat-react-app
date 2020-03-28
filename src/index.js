@@ -1,5 +1,5 @@
 import React from 'react'
-import { Provider } from 'react-redux'
+import { connect, Provider } from 'react-redux'
 import ReactDOM from 'react-dom'
 import './index.scss'
 import App from './App'
@@ -18,13 +18,17 @@ import LoginPage from './pages/login/login.component'
 
 import store from './redux/store'
 
+import { setCurrentUser } from './redux/user/user.actions'
+
 class Root extends React.Component {
   unsubscribeFromAuth = null
 
   componentDidMount() {
-    const { history } = this.props
+    const { history, setCurrentUser } = this.props
+
     auth.onAuthStateChanged(user => {
       if (user) {
+        setCurrentUser(user)
         history.push('/')
       }
     })
@@ -34,26 +38,30 @@ class Root extends React.Component {
 
   render() {
     return (
-      <Provider store={store}>
-        <CustomThemeProvider>
-          <Switch>
-            <Route exact path="/" component={App} />
-            <Route exact path="/register" component={RegisterPage} />
-            <Route exact path="/login" component={LoginPage} />
-          </Switch>
-        </CustomThemeProvider>
-      </Provider>
+      <Switch>
+        <Route exact path="/" component={App} />
+        <Route exact path="/register" component={RegisterPage} />
+        <Route exact path="/login" component={LoginPage} />
+      </Switch>
     )
   }
 }
 
-const RootWithRouter = withRouter(Root)
+const mapDispatchToProps = dispatch => ({
+  setCurrentUser: user => dispatch(setCurrentUser(user))
+})
+
+const RootWithRouter = withRouter(connect(null, mapDispatchToProps)(Root))
 
 ReactDOM.render(
   <React.StrictMode>
-    <Router>
-      <RootWithRouter />
-    </Router>
+    <Provider store={store}>
+      <CustomThemeProvider>
+        <Router>
+          <RootWithRouter />
+        </Router>
+      </CustomThemeProvider>
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 )
