@@ -1,5 +1,6 @@
 import React from 'react'
 import { auth } from '../../firebase/firebase.utils'
+import md5 from 'md5'
 
 import {
   RegisterPageContainer,
@@ -16,6 +17,7 @@ import CustomLink from '../../components/custom-link/custom-link.component'
 
 import { FaUserAlt, FaLock } from 'react-icons/fa'
 import { MdEmail } from 'react-icons/md'
+import firebase from 'firebase'
 
 class RegisterPage extends React.Component {
   state = {
@@ -24,7 +26,8 @@ class RegisterPage extends React.Component {
     password: '',
     confirmPassword: '',
     errors: [],
-    loading: false
+    loading: false,
+    usersRef: firebase.database().ref('users')
   }
 
   isFormValid = () => {
@@ -60,7 +63,7 @@ class RegisterPage extends React.Component {
   handleSubmit = event => {
     event.preventDefault()
 
-    const { email, password, loading } = this.state
+    const { username, email, password, loading } = this.state
 
     if (!this.isFormValid() || loading) return
 
@@ -70,14 +73,47 @@ class RegisterPage extends React.Component {
       .createUserWithEmailAndPassword(email, password)
       .then(createdUser => {
         console.log(createdUser)
+
+        createdUser.user
+          .updateProfile({
+            displayName: username,
+            photoURL: `https://gravatar.com/avatar/${md5(
+              createdUser.user.email
+            )}?d=retro`
+          })
+          .then(() => {
+            this.saveUser(createdUser).then(() => {
+              console.log('user saved')
+              this.setState({ loading: false })
+            })
+          })
+          .catch(err => {
+            console.error(err)
+            this.setState(({ errors }) => ({
+              errors: errors.concat(err),
+              loading: false
+            }))
+          })
       })
       .catch(err => {
         console.error(err)
-        this.setState(({ errors }) => ({ errors: errors.concat(err) }))
+        this.setState(({ errors }) => ({
+          errors: errors.concat(err),
+          loading: false
+        }))
       })
-      .finally(() => {
-        this.setState({ loading: false })
-      })
+    // .finally(() => {
+    //   this.setState({ loading: false })
+    // })
+  }
+
+  saveUser = createdUser => {
+    const { usersRef } = this.state
+    const { uid, displayName, photoURL } = createdUser.user
+    return usersRef.child(uid).set({
+      name: displayName,
+      avatar: photoURL
+    })
   }
 
   handleChange = event => {

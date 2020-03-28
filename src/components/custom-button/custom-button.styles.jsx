@@ -43,7 +43,7 @@ export const Spinner = styled.div`
   width: 28px;
   height: 28px;
   border: 4px solid ${({ theme }) => theme.button.bg};
-  border-right: 4px solid ${({ theme }) => theme.button.text};
+  border-right: 4px solid transparent;
   border-radius: 20px;
   animation: linear spin 1s infinite;
 `
