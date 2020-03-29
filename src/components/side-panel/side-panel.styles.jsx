@@ -5,4 +5,12 @@ export const SidePanelContainer = styled.div`
   width: 100%;
   background-color: ${({ theme }) => theme.sidePanel.bg};
   padding: 14px;
+
+  > :nth-child(n) {
+    margin-bottom: 16px;
+  }
+
+  > :last-child {
+    margin-bottom: 0px;
+  }
 `

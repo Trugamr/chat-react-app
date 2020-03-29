@@ -41,6 +41,12 @@ export const light = {
       away: colors.yellow
     }
   },
+  channels: {
+    bg: colors.lightBlue,
+    text: colors.blue,
+    hover: colors.lightBlue,
+    icon: colors.blue
+  },
   spinner: {
     bg: colors.lightest,
     text: colors.blue,
