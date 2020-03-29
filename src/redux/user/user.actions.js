@@ -9,3 +9,7 @@ export const setUserIsLoading = loading => ({
   type: UserActionTypes.SET_USER_IS_LOADING,
   payload: loading
 })
+
+export const clearCurrentUser = () => ({
+  type: UserActionTypes.CLEAR_CURRENT_USER
+})

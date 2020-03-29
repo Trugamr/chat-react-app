@@ -19,7 +19,7 @@ import LoginPage from './pages/login/login.component'
 
 import store from './redux/store'
 
-import { setCurrentUser, setUserIsLoading } from './redux/user/user.actions'
+import { setCurrentUser, clearCurrentUser } from './redux/user/user.actions'
 import { selectUserIsLoading } from './redux/user/user.selectors'
 
 import Spinner from './components/spinner/spinner.component'
@@ -28,19 +28,22 @@ class Root extends React.Component {
   unsubscribeFromAuth = null
 
   componentDidMount() {
-    const { history, setCurrentUser, setUserIsLoading } = this.props
+    const { history, setCurrentUser, clearCurrentUser } = this.props
 
-    auth.onAuthStateChanged(user => {
+    this.unsubscribeFromAuth = auth.onAuthStateChanged(user => {
       if (user) {
         setCurrentUser(user)
         history.push('/')
+      } else {
+        history.push('/login')
+        clearCurrentUser()
       }
-
-      setUserIsLoading(false)
     })
   }
 
-  componentWillUnmount() {}
+  componentWillUnmount() {
+    this.unsubscribeFromAuth()
+  }
 
   render() {
     const { isLoading } = this.props
@@ -63,7 +66,7 @@ const mapStateToProps = createStructuredSelector({
 
 const mapDispatchToProps = dispatch => ({
   setCurrentUser: user => dispatch(setCurrentUser(user)),
-  setUserIsLoading: loading => dispatch(setUserIsLoading(loading))
+  clearCurrentUser: () => dispatch(clearCurrentUser())
 })
 
 const RootWithRouter = withRouter(

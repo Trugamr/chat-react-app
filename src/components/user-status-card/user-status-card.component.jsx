@@ -1,8 +1,14 @@
 import React, { useState } from 'react'
+import { connect } from 'react-redux'
+import { createStructuredSelector } from 'reselect'
 import { useTheme } from 'styled-components'
 
 import { FaUser } from 'react-icons/fa'
 import { MdExitToApp } from 'react-icons/md'
+
+import { auth } from '../../firebase/firebase.utils'
+
+import { selectCurrentUser } from '../../redux/user/user.selectors'
 
 import {
   UserAndOptionsContainer,
@@ -30,13 +36,21 @@ const ArrowSVG = props => {
   )
 }
 
-const UserStatusCard = ({
-  username = 'Blind Specter',
-  photoURL = 'https://i.imgur.com/hCb3ysS.png',
-  status = 'online'
-}) => {
+const UserStatusCard = ({ currentUser }) => {
   const theme = useTheme()
   const [opened, setOpened] = useState(false)
+
+  const {
+    displayName = 'Blind Specter',
+    photoURL = 'https://i.imgur.com/hCb3ysS.png',
+    status = 'online'
+  } = currentUser
+
+  const handleSignout = () => {
+    auth.signOut().then(x => {
+      console.log('signed out ')
+    })
+  }
 
   return (
     <UserAndOptionsContainer opened={opened}>
@@ -45,7 +59,7 @@ const UserStatusCard = ({
           <img src={photoURL} alt="user avatar" />
         </UserAvatar>
         <UserInfo>
-          <Username>{username}</Username>
+          <Username>{displayName}</Username>
           <UserStatus>
             <Indicator status={status} /> <span>{status}</span>
           </UserStatus>
@@ -61,7 +75,7 @@ const UserStatusCard = ({
           <FaUser color={theme.userStatusCard.icon} />
           <span>change avatar</span>
         </li>
-        <li>
+        <li onClick={handleSignout}>
           <MdExitToApp color={theme.userStatusCard.icon} />
           <span>log out</span>
         </li>
@@ -70,4 +84,8 @@ const UserStatusCard = ({
   )
 }
 
-export default UserStatusCard
+const mapStateToProps = createStructuredSelector({
+  currentUser: selectCurrentUser
+})
+
+export default connect(mapStateToProps)(UserStatusCard)
