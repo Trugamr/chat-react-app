@@ -22,6 +22,12 @@ export const colors = {
 export const light = {
   bg: colors.lightest,
   text: colors.gray,
+  spinner: {
+    bg: colors.lightest,
+    text: colors.blue,
+    loaderFg: colors.blue,
+    loaderBg: colors.lightBlue
+  },
   form: {
     bg: colors.white,
     headingText: colors.gray,

@@ -1,8 +1,9 @@
 import React from 'react'
 import { connect, Provider } from 'react-redux'
+import { createStructuredSelector } from 'reselect'
 import ReactDOM from 'react-dom'
 import './index.scss'
-import App from './App'
+import App from './pages/app/app.component'
 import * as serviceWorker from './serviceWorker'
 import { auth } from './firebase/firebase.utils'
 
@@ -19,6 +20,9 @@ import LoginPage from './pages/login/login.component'
 import store from './redux/store'
 
 import { setCurrentUser } from './redux/user/user.actions'
+import { selectUserIsLoading } from './redux/user/user.selectors'
+
+import Spinner from './components/spinner/spinner.component'
 
 class Root extends React.Component {
   unsubscribeFromAuth = null
@@ -37,7 +41,11 @@ class Root extends React.Component {
   componentWillUnmount() {}
 
   render() {
-    return (
+    const { isLoading } = this.props
+
+    return isLoading ? (
+      <Spinner />
+    ) : (
       <Switch>
         <Route exact path="/" component={App} />
         <Route exact path="/register" component={RegisterPage} />
@@ -47,11 +55,17 @@ class Root extends React.Component {
   }
 }
 
+const mapStateToProps = createStructuredSelector({
+  isLoading: selectUserIsLoading
+})
+
 const mapDispatchToProps = dispatch => ({
   setCurrentUser: user => dispatch(setCurrentUser(user))
 })
 
-const RootWithRouter = withRouter(connect(null, mapDispatchToProps)(Root))
+const RootWithRouter = withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(Root)
+)
 
 ReactDOM.render(
   <React.StrictMode>
