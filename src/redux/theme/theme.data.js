@@ -5,6 +5,7 @@ export const colors = {
   littleLightRed: 'rgba(255, 7, 58, 0.5)',
   lightRed: 'rgba(255, 7, 58, 0.12)',
   green: '#28A745',
+  pastelGreen: '#41F56A',
   lightGreen: 'rgba(40, 167, 69, 0.12)',
   blue: '#007BFF',
   lightBlue: 'rgba(0, 122, 255, 0.12)',
@@ -13,7 +14,10 @@ export const colors = {
   lightGray: 'rgba(108, 117, 125, 0.12)',
   black: '#3E3E3E',
   white: '#FFFFFF',
-  lightest: '#F9F9FB'
+  lightWhite: 'rgba(255, 255, 255, 0.2)',
+  lightest: '#F9F9FB',
+  yellow: '#F7D154',
+  lightYellow: 'rgba(247, 209, 84, 0.12)'
 }
 
 //--THEMES--//
@@ -22,6 +26,21 @@ export const colors = {
 export const light = {
   bg: colors.lightest,
   text: colors.gray,
+  sidePanel: {
+    bg: colors.white
+  },
+  userStatusCard: {
+    bg: colors.blue,
+    text: colors.white,
+    subText: colors.lightest,
+    icon: colors.lightest,
+    optionBg: colors.lightWhite,
+    statusColors: {
+      online: colors.pastelGreen,
+      offline: colors.red,
+      away: colors.yellow
+    }
+  },
   spinner: {
     bg: colors.lightest,
     text: colors.blue,
