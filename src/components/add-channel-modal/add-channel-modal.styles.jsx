@@ -73,7 +73,7 @@ export const ModalContainer = styled.div`
   ${opacityAnimation}
 `
 
-export const Modal = styled.div`
+export const Modal = styled.form`
   padding: 20px;
   border-radius: 12px;
   visibility: hidden;
@@ -125,6 +125,10 @@ export const Input = styled.div`
 
     &:focus {
       outline: none;
+    }
+
+    &::placeholder {
+      color: ${({ theme }) => theme.channels.modal.textPrimary};
     }
   }
 `

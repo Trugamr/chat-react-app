@@ -1,8 +1,14 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { createStructuredSelector } from 'reselect'
 
 import { FaPlusSquare } from 'react-icons/fa'
 
 import AddChannelModal from '../add-channel-modal/add-channel-modal.component'
+
+import { selectCurrentUser } from '../../redux/user/user.selectors'
+import { selectCurrentChannel } from '../../redux/chat/chat.selectors'
+import { setCurrentChannel } from '../../redux/chat/chat.actions'
 
 import {
   ChannelsContainer,
@@ -11,52 +17,107 @@ import {
   ChannelItem
 } from './channels.styles'
 
+import { database } from '../../firebase/firebase.utils'
+
 class Channels extends React.Component {
   state = {
-    channels: [
-      {
-        id: '1',
-        name: 'react'
-      },
-      {
-        id: '2',
-        name: 'ui-design'
-      },
-      {
-        id: '3',
-        name: 'memes'
-      },
-      {
-        id: '4',
-        name: 'random-bs',
-        selected: true
-      },
-      {
-        id: '5',
-        name: 'react-redditjs'
+    channels: [],
+    channelName: '',
+    channelDetails: '',
+    channelsRef: database.ref('channels'),
+    modal: false,
+    firstLoad: true,
+    activeChannel: null
+  }
+
+  componentDidMount() {
+    this.addListeners()
+  }
+
+  componentWillUnmount() {
+    this.removeListeners()
+  }
+
+  addListeners = () => {
+    const { channelsRef } = this.state
+    let loadedChannels = []
+    channelsRef.on('child_added', snap => {
+      loadedChannels.push(snap.val())
+      this.setState({ channels: loadedChannels }, this.setFirstChannel)
+    })
+  }
+
+  removeListeners = () => {
+    const { channelsRef } = this.state
+    channelsRef.off()
+  }
+
+  setFirstChannel = () => {
+    const { firstLoad, channels } = this.state
+    const { setCurrentChannel } = this.props
+    if (firstLoad && channels.length) {
+      setCurrentChannel(channels[0])
+      this.setActiveChannel(channels[0])
+      this.setState({ firstLoad: false })
+    }
+  }
+
+  addChannel = ({ name, about }) => {
+    const { channelsRef } = this.state
+    const { currentUser } = this.props
+
+    const key = channelsRef.push().key
+
+    const newChannel = {
+      id: key,
+      name,
+      details: about,
+      createdBy: {
+        name: currentUser.displayName,
+        avatar: currentUser.photoURL,
+        uid: currentUser.uid
       }
-    ],
-    modal: false
+    }
+
+    channelsRef
+      .child(key)
+      .update(newChannel)
+      .then(() => {
+        this.setState({ channelName: '', channelDetails: '', modal: false })
+        console.log('channel created')
+      })
+      .catch(err => {
+        console.error(err)
+      })
   }
 
   handleClose = () => {
     this.setState({ modal: false })
-    console.log('closing modal')
   }
 
   handleConfirm = ({ name, about }) => {
-    console.log({ name, about })
-    this.setState({ modal: false })
-    console.log('confimed modal')
+    this.setState({ channelName: name, channelDetails: about })
+    if (name && about) {
+      this.addChannel({ name, about })
+    }
   }
 
   openModal = () => {
     this.setState({ modal: true })
-    console.log('opening modal')
+  }
+
+  setActiveChannel = channel => {
+    this.setState({ activeChannel: channel.id })
+  }
+
+  changeChannel = channel => {
+    const { setCurrentChannel } = this.props
+    setCurrentChannel(channel)
+    this.setActiveChannel(channel)
   }
 
   render() {
-    const { channels, modal } = this.state
+    const { channels, modal, activeChannel } = this.state
 
     return (
       <ChannelsContainer>
@@ -74,15 +135,31 @@ class Channels extends React.Component {
           />
         </ChannelsHeading>
         <ChannelsList>
-          {channels.map(({ id, name, selected }) => (
-            <ChannelItem key={id} selected={selected}>
-              # {name}
-            </ChannelItem>
-          ))}
+          {channels.map(channel => {
+            const { id, name } = channel
+            return (
+              <ChannelItem
+                key={id}
+                selected={channel.id === activeChannel}
+                onClick={() => this.changeChannel(channel)}
+              >
+                # {name}
+              </ChannelItem>
+            )
+          })}
         </ChannelsList>
       </ChannelsContainer>
     )
   }
 }
 
-export default Channels
+const mapStateToProps = createStructuredSelector({
+  currentUser: selectCurrentUser,
+  currentChannel: selectCurrentChannel
+})
+
+const mapDispatchToProps = dispatch => ({
+  setCurrentChannel: channel => dispatch(setCurrentChannel(channel))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Channels)

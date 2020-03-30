@@ -24,6 +24,7 @@ export const colors = {
 
 //--LIGHT--//
 export const light = {
+  name: 'light',
   bg: colors.lightest,
   text: colors.gray,
   sidePanel: {

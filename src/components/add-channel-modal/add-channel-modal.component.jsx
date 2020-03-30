@@ -20,22 +20,47 @@ class AddChannelModal extends React.Component {
     event.stopPropagation()
   }
 
+  formattedValue = value => {
+    value = value
+      .replace(' ', '-')
+      .replace('--', '-')
+      .toLowerCase()
+
+    if (value.startsWith('-')) value = ''
+    return value
+  }
+
   handleChange = event => {
-    const {
+    let {
       target: { name, value }
     } = event
+
+    if (name === 'name') value = this.formattedValue(value)
+
     this.setState({
       [name]: value
     })
   }
 
+  handleSubmit = event => {
+    event.preventDefault()
+    let { name, about } = this.state
+    name = name.endsWith('-') ? name.substring(0, name.length - 1) : name
+    const { confirm } = this.props
+    confirm({ name, about })
+  }
+
   render() {
-    const { showing, close, confirm } = this.props
+    const { showing, close } = this.props
     const { name, about } = this.state
 
     return (
       <ModalContainer showing={showing} onClick={close}>
-        <Modal onClick={this.handlePropogation} showing={showing}>
+        <Modal
+          onClick={this.handlePropogation}
+          onSubmit={this.handleSubmit}
+          showing={showing}
+        >
           <Heading>Add a channel</Heading>
           <Inputs>
             <Input>
@@ -44,6 +69,7 @@ class AddChannelModal extends React.Component {
                 type="text"
                 name="name"
                 value={name}
+                placeholder="channel-name"
                 onChange={this.handleChange}
               />
             </Input>
@@ -53,18 +79,16 @@ class AddChannelModal extends React.Component {
                 type="text"
                 name="about"
                 value={about}
+                placeholder="description"
                 onChange={this.handleChange}
               />
             </Input>
           </Inputs>
           <Options>
-            <Button className="close" onClick={close}>
+            <Button className="close" type="button" onClick={close}>
               CANCEL
             </Button>
-            <Button
-              className="confirm"
-              onClick={() => confirm({ name, about })}
-            >
+            <Button className="confirm" type="submit">
               ADD
             </Button>
           </Options>

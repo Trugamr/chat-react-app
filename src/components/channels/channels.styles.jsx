@@ -35,6 +35,7 @@ export const ChannelItem = styled.li`
   border-radius: 8px;
   background-color: ${({ selected, theme }) =>
     selected ? theme.channels.hover : 'transparent'};
+  opacity: ${({ selected }) => (selected ? 1 : 0.8)};
 
   margin-bottom: 4px;
 
