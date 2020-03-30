@@ -2,6 +2,8 @@ import React from 'react'
 
 import { FaPlusSquare } from 'react-icons/fa'
 
+import AddChannelModal from '../add-channel-modal/add-channel-modal.component'
+
 import {
   ChannelsContainer,
   ChannelsHeading,
@@ -18,7 +20,7 @@ class Channels extends React.Component {
       },
       {
         id: '2',
-        name: 'ui-designt'
+        name: 'ui-design'
       },
       {
         id: '3',
@@ -33,17 +35,43 @@ class Channels extends React.Component {
         id: '5',
         name: 'react-redditjs'
       }
-    ]
+    ],
+    modal: false
+  }
+
+  handleClose = () => {
+    this.setState({ modal: false })
+    console.log('closing modal')
+  }
+
+  handleConfirm = ({ name, about }) => {
+    console.log({ name, about })
+    this.setState({ modal: false })
+    console.log('confimed modal')
+  }
+
+  openModal = () => {
+    this.setState({ modal: true })
+    console.log('opening modal')
   }
 
   render() {
-    const { channels } = this.state
+    const { channels, modal } = this.state
 
     return (
       <ChannelsContainer>
+        <AddChannelModal
+          close={this.handleClose}
+          confirm={this.handleConfirm}
+          showing={modal}
+        />
         <ChannelsHeading>
           <span>CHANNELS</span>
-          <FaPlusSquare style={{ alignSelf: 'flex-end' }} size={20} />
+          <FaPlusSquare
+            onClick={this.openModal}
+            style={{ alignSelf: 'flex-end' }}
+            size={20}
+          />
         </ChannelsHeading>
         <ChannelsList>
           {channels.map(({ id, name, selected }) => (

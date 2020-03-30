@@ -45,7 +45,15 @@ export const light = {
     bg: colors.lightBlue,
     text: colors.blue,
     hover: colors.lightBlue,
-    icon: colors.blue
+    icon: colors.blue,
+    modal: {
+      bg: colors.lightBlue,
+      modalBg: colors.white,
+      textPrimary: colors.blue,
+      textSecondary: colors.white,
+      buttonPrimary: colors.blue,
+      buttonSeconday: colors.white
+    }
   },
   spinner: {
     bg: colors.lightest,
