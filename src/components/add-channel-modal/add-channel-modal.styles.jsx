@@ -2,23 +2,23 @@ import styled, { css } from 'styled-components'
 
 const opacityAnimation = css`
   @keyframes opacityIn {
-    0% {
-      visibility: hidden;
+    from {
       background-color: transparent;
     }
-    100% {
+    to {
       visibility: visible;
       background-color: ${({ theme }) => theme.channels.modal.bg};
     }
   }
 
   @keyframes opacityOut {
-    0% {
-      visibility: visible;
+    from {
       background-color: ${({ theme }) => theme.channels.modal.bg};
+      /* at start showing is false so in 
+      order to avoit flicker issue visibility is set dynamically */
+      visibility: ${({ showing }) => (showing ? 'visible' : 'hidden')};
     }
-    100% {
-      display: none;
+    to {
       visibility: hidden;
       background-color: transparent;
     }
@@ -32,12 +32,11 @@ const opacityAnimation = css`
 
 const scaleAnimation = css`
   @keyframes scaleIn {
-    0% {
-      visibility: hidden;
+    from {
       opacity: 0;
       transform: scale(0.5);
     }
-    100% {
+    to {
       visibility: visible;
       opacity: 1;
       transform: scale(1);
@@ -45,11 +44,10 @@ const scaleAnimation = css`
   }
 
   @keyframes scaleOut {
-    0% {
-      visibility: visible;
-      opacity: 1;
+    from {
+      visibility: ${({ showing }) => (showing ? 'visible' : 'hidden')};
     }
-    100% {
+    to {
       visibility: hidden;
       opacity: 0;
     }
@@ -70,6 +68,7 @@ export const ModalContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  visibility: hidden;
 
   ${opacityAnimation}
 `
@@ -77,6 +76,7 @@ export const ModalContainer = styled.div`
 export const Modal = styled.div`
   padding: 20px;
   border-radius: 12px;
+  visibility: hidden;
   background: ${({ theme }) => theme.channels.modal.modalBg};
   display: grid;
   grid-gap: 16px;
