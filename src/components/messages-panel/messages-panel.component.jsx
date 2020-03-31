@@ -4,14 +4,14 @@ import { MessagesPanelContainer } from './messages-panel.styles'
 
 import ChannelHeader from '../channel-header/channel-header.component'
 import Messages from '../messages/messages.component'
-import MessageSend from '../message-send/message-send.component'
+import MessageInput from '../message-input/message-input.component'
 
 const MessagesPanel = () => {
   return (
     <MessagesPanelContainer>
       <ChannelHeader />
       <Messages />
-      <MessageSend />
+      <MessageInput />
     </MessagesPanelContainer>
   )
 }

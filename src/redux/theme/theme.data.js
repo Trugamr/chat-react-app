@@ -33,8 +33,15 @@ export const light = {
   messages: {
     bg: colors.white
   },
-  messageSend: {
-    bg: colors.white
+  messageInput: {
+    bg: colors.white,
+    attachFg: colors.gray,
+    emojiBg: colors.lightYellow,
+    sendBg: colors.lightBlue,
+    sendFg: colors.blue,
+    placeholder: colors.gray,
+    text: colors.black,
+    outline: colors.blue
   },
   channelHeader: {
     bg: colors.white,
