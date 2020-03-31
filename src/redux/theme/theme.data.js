@@ -16,8 +16,8 @@ export const colors = {
   white: '#FFFFFF',
   lightWhite: 'rgba(255, 255, 255, 0.2)',
   lightest: '#F9F9FB',
-  yellow: '#F7D154',
-  lightYellow: 'rgba(247, 209, 84, 0.12)'
+  yellow: '#FFC400',
+  lightYellow: 'rgba(255, 196, 0, 0.12)'
 }
 
 //--THEMES--//
@@ -30,6 +30,22 @@ export const light = {
   sidePanel: {
     bg: colors.white
   },
+  messages: {
+    bg: colors.white
+  },
+  messageSend: {
+    bg: colors.white
+  },
+  channelHeader: {
+    bg: colors.white,
+    text: colors.black,
+    icon: colors.yellow,
+    search: {
+      text: colors.gray,
+      placeholder: colors.littleLightGray,
+      bg: colors.lightGray
+    }
+  },
   userStatusCard: {
     bg: colors.blue,
     text: colors.white,
@@ -41,6 +57,12 @@ export const light = {
       offline: colors.red,
       away: colors.yellow
     }
+  },
+  starred: {
+    bg: colors.lightYellow,
+    text: colors.yellow,
+    hover: colors.lightYellow,
+    icon: colors.yellow
   },
   channels: {
     bg: colors.lightBlue,
