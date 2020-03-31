@@ -41,7 +41,10 @@ class LoginPage extends React.Component {
       })
       .catch(err => {
         console.error(err)
-        this.setState(({ errors }) => ({ errors: errors.concat(err) }))
+        this.setState(({ errors }) => ({
+          errors: errors.concat(err),
+          loading: false
+        }))
       })
   }
 
