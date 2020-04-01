@@ -41,7 +41,8 @@ export const light = {
     sendFg: colors.blue,
     placeholder: colors.gray,
     text: colors.black,
-    outline: colors.blue
+    outline: colors.blue,
+    errorBg: colors.lightRed
   },
   channelHeader: {
     bg: colors.white,

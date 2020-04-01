@@ -71,5 +71,28 @@ export const SendIcon = styled.button`
   background-color: ${({ theme }) => theme.messageInput.sendBg};
   color: ${({ theme }) => theme.messageInput.sendFg};
   ${iconCSS}
+
+  &:disabled {
+    cursor: wait;
+  }
+
   border-radius: 0px 14px 14px 0px;
+`
+
+export const Spinner = styled.div`
+  @keyframes spin {
+    from {
+      transform: rotate(-45deg);
+    }
+    to {
+      transform: rotate(315deg);
+    }
+  }
+
+  width: 22px;
+  height: 22px;
+  border: 3px solid ${({ theme }) => theme.messageInput.sendFg};
+  border-right: 3px solid transparent;
+  border-radius: 20px;
+  animation: linear spin 1s infinite;
 `
