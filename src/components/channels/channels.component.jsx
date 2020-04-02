@@ -10,6 +10,8 @@ import { selectCurrentUser } from '../../redux/user/user.selectors'
 import { selectCurrentChannel } from '../../redux/chat/chat.selectors'
 import { setCurrentChannel } from '../../redux/chat/chat.actions'
 
+import Spinner from '../spinner/spinner.component'
+
 import {
   ChannelsContainer,
   ChannelsHeading,
@@ -117,7 +119,7 @@ class Channels extends React.Component {
   }
 
   render() {
-    const { channels, modal, activeChannel } = this.state
+    const { channels, modal, activeChannel, firstLoad } = this.state
 
     return (
       <ChannelsContainer>
@@ -134,20 +136,27 @@ class Channels extends React.Component {
             size={20}
           />
         </ChannelsHeading>
-        <ChannelsList>
-          {channels.map(channel => {
-            const { id, name } = channel
-            return (
-              <ChannelItem
-                key={id}
-                selected={channel.id === activeChannel}
-                onClick={() => this.changeChannel(channel)}
-              >
-                # {name}
-              </ChannelItem>
-            )
-          })}
-        </ChannelsList>
+        {firstLoad ? (
+          <Spinner
+            style={{ backgroundColor: 'transparent', marginTop: 20 }}
+            size="40px"
+          />
+        ) : (
+          <ChannelsList>
+            {channels.map(channel => {
+              const { id, name } = channel
+              return (
+                <ChannelItem
+                  key={id}
+                  selected={channel.id === activeChannel}
+                  onClick={() => this.changeChannel(channel)}
+                >
+                  # {name}
+                </ChannelItem>
+              )
+            })}
+          </ChannelsList>
+        )}
       </ChannelsContainer>
     )
   }

@@ -12,7 +12,7 @@ import {
 const timeFromNow = timestamp => moment(timestamp).fromNow(true)
 
 const Message = ({ message = {} }) => {
-  const { content, timestamp, user } = message
+  const { content, timestamp, user, image } = message
 
   return (
     <MessageContainer>
@@ -23,7 +23,9 @@ const Message = ({ message = {} }) => {
         <Heading>
           <h2>{user.name}</h2> <span>{`${timeFromNow(timestamp)} ago`}</span>
         </Heading>
-        <Content>{content}</Content>
+        <Content image={!!image}>
+          {content || <img src={image} alt="message-attachment" />}
+        </Content>
       </MessageInfo>
     </MessageContainer>
   )

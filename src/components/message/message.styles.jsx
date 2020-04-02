@@ -44,4 +44,10 @@ export const Content = styled.p`
   padding-right: 20px;
   font-family: 'archiaregular';
   word-break: break-word;
+
+  img {
+    border-radius: 14px;
+    margin-top: 4px;
+    max-width: 400px;
+  }
 `

@@ -1,11 +1,7 @@
 import ChatActionTypes from './chat.types'
 
 const INITIAL_STATE = {
-  currentChannel: null,
-  currentMessages: null,
-  messageListeners: {},
-  channelMessages: {},
-  directMessages: {}
+  currentChannel: null
 }
 
 const chatReducer = (state = INITIAL_STATE, action) => {

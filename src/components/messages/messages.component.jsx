@@ -28,11 +28,15 @@ class Messages extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    this.removeListeners()
+  }
+
   addListeners = channelId => {
     const { messagesRef, messageListeners } = this.state
 
     if (messageListeners.includes(channelId)) {
-      console.log('ALREADY_LISTENING')
+      // console.log('ALREADY_LISTENING')
     } else {
       this.setState({ loading: true })
       this.setState(
@@ -63,8 +67,13 @@ class Messages extends React.Component {
           })
         }
       )
-      console.log('ADDING_LISTENER')
+      // console.log('ADDING_LISTENER')
     }
+  }
+
+  removeListeners = () => {
+    const { messagesRef, messageListeners } = this.state
+    messageListeners.forEach(channelId => messagesRef.child(channelId).off())
   }
 
   displayMessages = (messages = []) => {
@@ -86,7 +95,7 @@ class Messages extends React.Component {
           {currentChannel && !loading ? (
             this.displayMessages(messages[currentChannel.id])
           ) : (
-            <Spinner />
+            <Spinner style={{ backgroundColor: 'transparent' }} />
           )}
         </Container>
       </MessagesContainer>

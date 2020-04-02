@@ -59,7 +59,7 @@ const scaleAnimation = css`
   animation-fill-mode: forwards;
 `
 
-export const ModalContainer = styled.div`
+export const FileModalContainer = styled.div`
   width: 100vw;
   height: 100vh;
   top: 0;
@@ -99,9 +99,9 @@ export const Inputs = styled.div`
 export const Input = styled.div`
   width: 100%;
   display: grid;
-  grid-template-columns: 80px auto;
+  grid-template-columns: auto 80px 0px;
 
-  span {
+  label {
     font-family: 'archiasemibold';
     display: flex;
     justify-content: center;
@@ -110,12 +110,14 @@ export const Input = styled.div`
     font-size: 16px;
     height: 100%;
     width: 100%;
-    border-radius: 8px 0px 0px 8px;
+    cursor: pointer;
+    border-radius: 0px 8px 8px 0px;
     color: ${({ theme }) => theme.channels.modal.textSecondary};
     background-color: ${({ theme }) => theme.channels.modal.textPrimary};
   }
 
-  input {
+  span {
+    min-width: 160px;
     padding: 8px;
     border: 0px;
     background-color: ${({ theme }) => theme.channels.modal.bg};
@@ -123,6 +125,15 @@ export const Input = styled.div`
     border-radius: 8px;
     font-family: 'archiaregular';
     font-size: 16px;
+  }
+
+  input {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
 
     &:focus {
       outline: none;
