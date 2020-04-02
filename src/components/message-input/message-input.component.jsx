@@ -88,8 +88,11 @@ class MessageInput extends React.Component {
           name="message"
           onChange={this.handleChange}
           value={message}
+          autocomplete="off"
           placeholder={
-            currentChannel.name ? `message #${currentChannel.name}` : 'message'
+            currentChannel && currentChannel.name
+              ? `message #${currentChannel.name}`
+              : 'message'
           }
         />
         <AttachIcon type="button">
@@ -100,7 +103,7 @@ class MessageInput extends React.Component {
             🙂
           </span>
         </EmojiIcon>
-        <SendIcon type="submit" disabled={loading}>
+        <SendIcon type="submit" disabled={loading || !currentChannel}>
           {loading ? <Spinner /> : <MdSend />}
         </SendIcon>
       </MessageInputContainer>

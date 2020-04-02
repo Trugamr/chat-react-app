@@ -11,6 +11,7 @@ export const colors = {
   lightBlue: 'rgba(0, 122, 255, 0.12)',
   gray: '#6C757D',
   littleLightGray: 'rgba(108, 117, 125, 0.5)',
+  littleLighterGray: 'rgba(108, 117, 125, 0.25)',
   lightGray: 'rgba(108, 117, 125, 0.12)',
   black: '#3E3E3E',
   white: '#FFFFFF',
@@ -27,8 +28,17 @@ export const light = {
   name: 'light',
   bg: colors.lightest,
   text: colors.gray,
+  scrollbar: {
+    bg: colors.lightGray,
+    fg: colors.littleLighterGray,
+    fgHover: colors.littleLightGray
+  },
   sidePanel: {
     bg: colors.white
+  },
+  message: {
+    textPrimary: colors.black,
+    textSecondary: colors.littleLightGray
   },
   messages: {
     bg: colors.white
