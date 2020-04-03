@@ -15,11 +15,11 @@ import {
   ProgressBar
 } from './message-input.styles'
 
-import firebase, { database, storage } from '../../firebase/firebase.utils'
+import firebase, { firestore, storage } from '../../firebase/firebase.utils'
 
 class MessageInput extends React.Component {
   state = {
-    messagesRef: database.ref('messages'),
+    channelsRef: firestore.collection('channels'),
     storageRef: storage.ref(),
     uploadeState: '',
     uploadTask: null,
@@ -43,16 +43,22 @@ class MessageInput extends React.Component {
   }
 
   sendMessage = () => {
-    const { message, messagesRef, loading } = this.state
+    const { message, channelsRef, loading } = this.state
     const { currentChannel } = this.props
     if (!message || loading) return
 
     this.setState({ loading: true })
 
-    messagesRef
-      .child(currentChannel.id)
-      .push()
-      .set(this.createMessage())
+    const messageRef = channelsRef
+      .doc(currentChannel.id)
+      .collection('messages')
+      .doc()
+
+    channelsRef
+      .doc(currentChannel.id)
+      .collection('messages')
+      .doc(messageRef.id)
+      .set(this.createMessage({ id: messageRef.id }))
       .then(() => {
         this.setState({ loading: false, message: '' })
       })
@@ -80,12 +86,13 @@ class MessageInput extends React.Component {
     console.log('closed')
   }
 
-  createMessage = (fileUrl = null) => {
+  createMessage = ({ id, fileUrl }) => {
     const { message } = this.state
     const { currentUser } = this.props
 
     const createdMessage = {
-      timestamp: firebase.database.ServerValue.TIMESTAMP,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      id,
       user: {
         id: currentUser.uid,
         name: currentUser.displayName,
@@ -103,10 +110,10 @@ class MessageInput extends React.Component {
   }
 
   uploadeFile = file => {
-    const { messagesRef, storageRef } = this.state
+    const { channelsRef, storageRef } = this.state
     const { currentChannel } = this.props
     const pathToUpload = currentChannel.id
-    const ref = messagesRef
+    const ref = channelsRef
     const filePath = `chat/public/${uuidv4()}.jpg`
 
     this.setState(
@@ -156,7 +163,7 @@ class MessageInput extends React.Component {
     ref
       .child(pathToUpload)
       .push()
-      .set(this.createMessage(fileUrl))
+      .set(this.createMessage({ fileUrl }))
       .then(() => {
         this.setState({
           uploadState: 'done'
