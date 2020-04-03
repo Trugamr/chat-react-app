@@ -1,5 +1,5 @@
 import React from 'react'
-import { auth, database } from '../../firebase/firebase.utils'
+import { auth, firestore } from '../../firebase/firebase.utils'
 import md5 from 'md5'
 
 import {
@@ -26,7 +26,7 @@ class RegisterPage extends React.Component {
     confirmPassword: '',
     errors: [],
     loading: false,
-    usersRef: database.ref('users')
+    usersRef: firestore.collection('users')
   }
 
   isFormValid = () => {
@@ -109,7 +109,7 @@ class RegisterPage extends React.Component {
   saveUser = createdUser => {
     const { usersRef } = this.state
     const { uid, displayName, photoURL } = createdUser.user
-    return usersRef.child(uid).set({
+    return usersRef.doc(uid).set({
       name: displayName,
       avatar: photoURL
     })
