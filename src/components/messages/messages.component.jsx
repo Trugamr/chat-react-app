@@ -8,12 +8,11 @@ import Spinner from '../spinner/spinner.component'
 
 import { updateChannelMembers } from '../../redux/chat/chat.actions'
 
-import { database } from '../../firebase/firebase.utils'
+import { firestore } from '../../firebase/firebase.utils'
 
 class Messages extends React.Component {
   state = {
-    messagesRef: database.ref('messages'),
-    messageListeners: [],
+    messageListeners: {},
     messages: {},
     loading: true
   }
@@ -31,47 +30,40 @@ class Messages extends React.Component {
   }
 
   addListeners = channelId => {
-    const { messagesRef, messageListeners } = this.state
+    const { messageListeners } = this.state
 
-    if (messageListeners.includes(channelId)) {
-      // console.log('ALREADY_LISTENING')
+    if (!messageListeners[channelId]) {
+      // add listener
+      const messagesRef = firestore
+        .collection('channels')
+        .doc(channelId)
+        .collection('messages')
+        .orderBy('timestamp', 'asc')
+
+      const messageListener = messagesRef.onSnapshot(snapshot => {
+        const channelMessages = snapshot.docs.map(message => message.data())
+
+        this.setState(({ messages }) => ({
+          messages: { ...messages, [channelId]: channelMessages },
+          loading: false
+        }))
+      })
+
+      // adding listener
+      this.setState(({ messageListeners }) => ({
+        messageListeners: { ...messageListeners, [channelId]: messageListener },
+        loading: true
+      }))
     } else {
-      this.setState({ loading: true })
-      this.setState(
-        ({ messageListeners }) => ({
-          messageListeners: messageListeners.concat(channelId)
-        }),
-        () => {
-          const channelMessagesRef = messagesRef.child(channelId)
-
-          channelMessagesRef.once('value', snap => {
-            if (!snap.exists()) this.setState({ loading: false })
-          })
-
-          channelMessagesRef.on('child_added', snap => {
-            this.setState({ loading: false })
-            if (!this.state.messages[channelId]) {
-              this.setState(({ messages }) => ({
-                messages: { ...messages, [channelId]: [snap.val()] }
-              }))
-            } else {
-              this.setState(({ messages }) => ({
-                messages: {
-                  ...messages,
-                  [channelId]: [...messages[channelId], snap.val()]
-                }
-              }))
-            }
-          })
-        }
-      )
-      // console.log('ADDING_LISTENER')
+      // already listening
     }
   }
 
   removeListeners = () => {
-    const { messagesRef, messageListeners } = this.state
-    messageListeners.forEach(channelId => messagesRef.child(channelId).off())
+    const { messageListeners } = this.state
+    Object.keys(messageListeners).forEach(listener => {
+      messageListeners[listener]()
+    })
   }
 
   displayMessages = (messages = []) => {

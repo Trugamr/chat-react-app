@@ -9,7 +9,10 @@ import {
   Content
 } from './message.styles'
 
-const timeFromNow = timestamp => moment(timestamp).fromNow(true)
+const timeFromNow = timestamp => {
+  if (timestamp) return moment(timestamp.toDate()).fromNow(true)
+  else return 'just now'
+}
 
 const Message = ({ message = {} }) => {
   const { content, timestamp, user, image } = message

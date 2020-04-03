@@ -160,10 +160,16 @@ class MessageInput extends React.Component {
   }
 
   sendFileMessage = (fileUrl, ref, pathToUpload) => {
+    const messageRef = ref
+      .doc(pathToUpload)
+      .collection('messages')
+      .doc()
+
     ref
-      .child(pathToUpload)
-      .push()
-      .set(this.createMessage({ fileUrl }))
+      .doc(pathToUpload)
+      .collection('messages')
+      .doc(messageRef.id)
+      .set(this.createMessage({ id: messageRef.id, fileUrl }))
       .then(() => {
         this.setState({
           uploadState: 'done'

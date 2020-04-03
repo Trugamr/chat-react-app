@@ -43,13 +43,12 @@ class Channels extends React.Component {
 
   addListeners = () => {
     const { channelsRef } = this.state
-    const unsubscribe = channelsRef.onSnapshot(snapshot => {
-      const channels = snapshot.docs.map(doc => doc.data())
-      this.setState(
-        { channels: this.sortChannels(channels) },
-        this.setFirstChannel
-      )
-    })
+    const unsubscribe = channelsRef
+      .orderBy('createdAt', 'asc')
+      .onSnapshot(snapshot => {
+        const channels = snapshot.docs.map(doc => doc.data())
+        this.setState({ channels: channels }, this.setFirstChannel)
+      })
 
     this.setState({
       unsubscribeChannelListener: unsubscribe
@@ -70,11 +69,6 @@ class Channels extends React.Component {
       this.setState({ firstLoad: false })
     }
   }
-
-  sortChannels = channels =>
-    channels.sort((prev, next) =>
-      prev.createdAt.seconds < next.createdAt.seconds ? -1 : 1
-    )
 
   addChannel = ({ name, about }) => {
     const { channelsRef } = this.state
