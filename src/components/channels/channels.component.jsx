@@ -19,14 +19,15 @@ import {
   ChannelItem
 } from './channels.styles'
 
-import { database } from '../../firebase/firebase.utils'
+import firebase, { firestore } from '../../firebase/firebase.utils'
 
 class Channels extends React.Component {
   state = {
     channels: [],
     channelName: '',
     channelDetails: '',
-    channelsRef: database.ref('channels'),
+    channelsRef: firestore.collection('channels'),
+    unsubscribeChannelListener: null,
     modal: false,
     firstLoad: true,
     activeChannel: null
@@ -42,16 +43,25 @@ class Channels extends React.Component {
 
   addListeners = () => {
     const { channelsRef } = this.state
-    let loadedChannels = []
-    channelsRef.on('child_added', snap => {
-      loadedChannels.push(snap.val())
-      this.setState({ channels: loadedChannels }, this.setFirstChannel)
+    const unsubscribe = channelsRef
+
+    channelsRef.onSnapshot(snapshot => {
+      const channels = snapshot.docs.map(doc => doc.data())
+      this.setState(
+        { channels: this.sortChannels(channels) },
+        this.setFirstChannel
+      )
+      console.log(channels)
+    })
+
+    this.setState({
+      unsubscribeChannelListener: unsubscribe
     })
   }
 
   removeListeners = () => {
-    const { channelsRef } = this.state
-    channelsRef.off()
+    const { unsubscribeChannelListener } = this.state
+    unsubscribeChannelListener()
   }
 
   setFirstChannel = () => {
@@ -64,26 +74,32 @@ class Channels extends React.Component {
     }
   }
 
+  sortChannels = channels =>
+    channels.sort((prev, next) =>
+      prev.createdAt.seconds < next.createdAt.seconds ? -1 : 1
+    )
+
   addChannel = ({ name, about }) => {
     const { channelsRef } = this.state
     const { currentUser } = this.props
 
-    const key = channelsRef.push().key
+    const ref = channelsRef.doc()
 
     const newChannel = {
-      id: key,
+      id: ref.id,
       name,
       details: about,
       createdBy: {
         name: currentUser.displayName,
         avatar: currentUser.photoURL,
         uid: currentUser.uid
-      }
+      },
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
     }
 
     channelsRef
-      .child(key)
-      .update(newChannel)
+      .doc(ref.id)
+      .set(newChannel)
       .then(() => {
         this.setState({ channelName: '', channelDetails: '', modal: false })
         console.log('channel created')
