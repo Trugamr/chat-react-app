@@ -43,15 +43,12 @@ class Channels extends React.Component {
 
   addListeners = () => {
     const { channelsRef } = this.state
-    const unsubscribe = channelsRef
-
-    channelsRef.onSnapshot(snapshot => {
+    const unsubscribe = channelsRef.onSnapshot(snapshot => {
       const channels = snapshot.docs.map(doc => doc.data())
       this.setState(
         { channels: this.sortChannels(channels) },
         this.setFirstChannel
       )
-      console.log(channels)
     })
 
     this.setState({

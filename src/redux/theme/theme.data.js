@@ -53,7 +53,7 @@ export const light = {
     text: colors.black,
     outline: colors.blue,
     errorBg: colors.lightRed,
-    progress: colors.lightGray
+    progress: colors.lightGreen
   },
   channelHeader: {
     bg: colors.white,
