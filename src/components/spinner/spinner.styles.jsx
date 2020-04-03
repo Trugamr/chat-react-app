@@ -22,7 +22,7 @@ export const Loader = styled.div`
 
   height: ${({ size }) => size};
   width: ${({ size }) => size};
-  border: 8px solid ${({ theme }) => theme.spinner.loaderFg};
+  border: 8px solid ${({ theme, color }) => color || theme.spinner.loaderFg};
   border-right: 8px Solid ${({ theme }) => theme.spinner.loaderBg};
   border-radius: 9999px;
   animation: linear spin 1.2s infinite;

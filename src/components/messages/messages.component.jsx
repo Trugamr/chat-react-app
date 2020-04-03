@@ -1,14 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { createStructuredSelector } from 'reselect'
 
 import { MessagesContainer, Container } from './messages.styles'
 
 import Message from '../message/message.component'
 import Spinner from '../spinner/spinner.component'
 
-import { selectCurrentUser } from '../../redux/user/user.selectors'
-import { selectCurrentChannel } from '../../redux/chat/chat.selectors'
+import { updateChannelMembers } from '../../redux/chat/chat.actions'
 
 import { database } from '../../firebase/firebase.utils'
 
@@ -45,11 +43,11 @@ class Messages extends React.Component {
         }),
         () => {
           const channelMessagesRef = messagesRef.child(channelId)
-          console.log(
-            channelMessagesRef.once('value', snap => {
-              if (!snap.exists()) this.setState({ loading: false })
-            })
-          )
+
+          channelMessagesRef.once('value', snap => {
+            if (!snap.exists()) this.setState({ loading: false })
+          })
+
           channelMessagesRef.on('child_added', snap => {
             this.setState({ loading: false })
             if (!this.state.messages[channelId]) {
@@ -85,9 +83,24 @@ class Messages extends React.Component {
     })
   }
 
+  countUniqueMembers = (messages = []) => {
+    const uniqueMembers = messages.reduce((acc, message) => {
+      if (!acc.includes(message.user.id)) {
+        acc.push(message.user.id)
+      }
+      return acc
+    }, [])
+
+    return uniqueMembers.length
+  }
+
   render() {
     const { messages, loading } = this.state
-    const { currentChannel } = this.props
+    const { currentChannel, updateMembers } = this.props
+
+    // if (currentChannel && !loading) {
+    //   updateMembers(this.countUniqueMembers(messages[currentChannel.id]))
+    // }
 
     return (
       <MessagesContainer>
@@ -103,9 +116,8 @@ class Messages extends React.Component {
   }
 }
 
-const mapStateToProps = createStructuredSelector({
-  currentUser: selectCurrentUser,
-  currentChannel: selectCurrentChannel
+const mapDispatchToProps = dispatch => ({
+  updateMembers: members => dispatch(updateChannelMembers(members))
 })
 
-export default connect(mapStateToProps)(Messages)
+export default connect(null, mapDispatchToProps)(Messages)

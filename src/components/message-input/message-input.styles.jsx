@@ -59,6 +59,10 @@ export const AttachIcon = styled.button`
   font-size: 28px;
   width: 40px;
   padding-left: 10px;
+
+  &:disabled {
+    cursor: wait;
+  }
 `
 
 export const EmojiIcon = styled.button`
@@ -95,4 +99,27 @@ export const Spinner = styled.div`
   border-right: 3px solid transparent;
   border-radius: 20px;
   animation: linear spin 1s infinite;
+`
+
+export const ProgressBar = styled.progress`
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  height: 100%;
+  width: 100%;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  opacity: 0.7;
+
+  &[value]::-webkit-progress-bar {
+    background: transparent;
+    border-radius: 14px;
+  }
+
+  &[value]::-webkit-progress-value {
+    background: ${({ theme }) => theme.messageInput.progress};
+    border-radius: 14px;
+  }
 `

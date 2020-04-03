@@ -1,6 +1,4 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { createStructuredSelector } from 'reselect'
 import { v4 as uuidv4 } from 'uuid'
 
 import { MdSend, MdAttachFile } from 'react-icons/md'
@@ -13,13 +11,11 @@ import {
   AttachIcon,
   EmojiIcon,
   SendIcon,
-  Spinner
+  Spinner,
+  ProgressBar
 } from './message-input.styles'
 
 import firebase, { database, storage } from '../../firebase/firebase.utils'
-
-import { selectCurrentChannel } from '../../redux/chat/chat.selectors'
-import { selectCurrentUser } from '../../redux/user/user.selectors'
 
 class MessageInput extends React.Component {
   state = {
@@ -175,7 +171,7 @@ class MessageInput extends React.Component {
   }
 
   render() {
-    const { message, loading, modal } = this.state
+    const { message, loading, modal, percentUploaded, uploadState } = this.state
     const { currentChannel } = this.props
 
     return (
@@ -186,6 +182,9 @@ class MessageInput extends React.Component {
           close={this.handleClose}
         />
         <MessageInputContainer onSubmit={this.handleSubmit}>
+          {uploadState === 'uploading' ? (
+            <ProgressBar type="progress" max="100" value={percentUploaded} />
+          ) : null}
           <InputField
             required
             type="text"
@@ -202,8 +201,9 @@ class MessageInput extends React.Component {
           <AttachIcon
             type="button"
             onClick={() => this.setState({ modal: true })}
+            disabled={uploadState === 'uploading'}
           >
-            <MdAttachFile />
+            {uploadState === 'uploading' ? <Spinner /> : <MdAttachFile />}
           </AttachIcon>
           <EmojiIcon type="button">
             <span role="img" aria-label="smile">
@@ -219,9 +219,4 @@ class MessageInput extends React.Component {
   }
 }
 
-const mapStateToProps = createStructuredSelector({
-  currentChannel: selectCurrentChannel,
-  currentUser: selectCurrentUser
-})
-
-export default connect(mapStateToProps)(MessageInput)
+export default MessageInput

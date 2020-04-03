@@ -7,12 +7,7 @@ export const selectCurrentChannel = createSelector(
   chat => chat.currentChannel
 )
 
-export const selectCurrentMessages = createSelector(
+export const selectChannelMembers = createSelector(
   [selectChat],
-  chat => chat.currentMessages
-)
-
-export const selectMessageListeners = createSelector(
-  [selectChat],
-  chat => chat.messageListeners
+  chat => chat.channelMembers
 )

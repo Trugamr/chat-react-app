@@ -52,7 +52,8 @@ export const light = {
     placeholder: colors.gray,
     text: colors.black,
     outline: colors.blue,
-    errorBg: colors.lightRed
+    errorBg: colors.lightRed,
+    progress: colors.lightGray
   },
   channelHeader: {
     bg: colors.white,
