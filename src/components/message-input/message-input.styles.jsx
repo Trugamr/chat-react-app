@@ -111,7 +111,7 @@ export const ProgressBar = styled.progress`
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  opacity: 0.7;
+  opacity: 0.8;
 
   &[value]::-webkit-progress-bar {
     background: transparent;

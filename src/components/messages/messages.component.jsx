@@ -56,6 +56,13 @@ class Messages extends React.Component {
       }))
     } else {
       // already listening
+      console.log('RAN')
+      const { messages } = this.state
+      const { updateMembers, currentChannel } = this.props
+
+      if (currentChannel && messages[currentChannel.id]) {
+        updateMembers(this.countUniqueMembers(messages[currentChannel.id]))
+      }
     }
   }
 
@@ -88,11 +95,7 @@ class Messages extends React.Component {
 
   render() {
     const { messages, loading } = this.state
-    const { currentChannel, updateMembers } = this.props
-
-    // if (currentChannel && !loading) {
-    //   updateMembers(this.countUniqueMembers(messages[currentChannel.id]))
-    // }
+    const { currentChannel } = this.props
 
     return (
       <MessagesContainer>

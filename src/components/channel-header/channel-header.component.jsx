@@ -32,7 +32,9 @@ const ChannelHeader = ({ currentChannel, members }) => {
               {starred ? <FaStar size={26} /> : <FaRegStar size={26} />}
             </Heading>
             <About>{currentChannel.details}</About>
-            <Members>{members} members</Members>
+            <Members>
+              {members === 1 ? `${members} member` : `${members} members`}
+            </Members>
           </ChannelInfo>
           <SearchFieldContainer>
             <Search>
