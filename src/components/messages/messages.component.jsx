@@ -1,4 +1,5 @@
 import React from 'react'
+import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
 
 import { MessagesContainer, Container } from './messages.styles'
@@ -7,6 +8,7 @@ import Message from '../message/message.component'
 import Spinner from '../spinner/spinner.component'
 
 import { updateChannelMembers } from '../../redux/chat/chat.actions'
+import { selectMessageSearchFilters } from '../../redux/chat/chat.selectors'
 
 import { firestore } from '../../firebase/firebase.utils'
 
@@ -27,6 +29,29 @@ class Messages extends React.Component {
 
   componentWillUnmount() {
     this.removeListeners()
+  }
+
+  filterMessages = messages => {
+    const { filters } = this.props
+    const regex = new RegExp(filters.text, 'gi')
+
+    if (messages) {
+      const searchResults = messages.reduce((acc, message) => {
+        if (
+          message.content &&
+          (message.content.match(regex) || message.user.name.match(regex))
+        ) {
+          acc.push(message)
+        } else if (message.image && message.user.name.match(regex)) {
+          acc.push(message)
+        }
+        return acc
+      }, [])
+
+      return searchResults
+    }
+
+    return []
   }
 
   addListeners = channelId => {
@@ -56,7 +81,6 @@ class Messages extends React.Component {
       }))
     } else {
       // already listening
-      console.log('RAN')
       const { messages } = this.state
       const { updateMembers, currentChannel } = this.props
 
@@ -101,7 +125,9 @@ class Messages extends React.Component {
       <MessagesContainer>
         <Container>
           {currentChannel && !loading ? (
-            this.displayMessages(messages[currentChannel.id])
+            this.displayMessages(
+              this.filterMessages(messages[currentChannel.id])
+            )
           ) : (
             <Spinner style={{ backgroundColor: 'transparent' }} />
           )}
@@ -111,8 +137,12 @@ class Messages extends React.Component {
   }
 }
 
+const mapStateToProps = createStructuredSelector({
+  filters: selectMessageSearchFilters
+})
+
 const mapDispatchToProps = dispatch => ({
   updateMembers: members => dispatch(updateChannelMembers(members))
 })
 
-export default connect(null, mapDispatchToProps)(Messages)
+export default connect(mapStateToProps, mapDispatchToProps)(Messages)

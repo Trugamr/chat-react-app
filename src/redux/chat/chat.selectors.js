@@ -11,3 +11,8 @@ export const selectChannelMembers = createSelector(
   [selectChat],
   chat => chat.channelMembers
 )
+
+export const selectMessageSearchFilters = createSelector(
+  [selectChat],
+  chat => chat.messageSearchFilters
+)

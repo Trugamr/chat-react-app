@@ -2,7 +2,10 @@ import ChatActionTypes from './chat.types'
 
 const INITIAL_STATE = {
   currentChannel: null,
-  channelMembers: 0
+  channelMembers: 0,
+  messageSearchFilters: {
+    text: ''
+  }
 }
 
 const chatReducer = (state = INITIAL_STATE, action) => {
@@ -16,6 +19,14 @@ const chatReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         channelMembers: action.payload
+      }
+    case ChatActionTypes.SET_MESSAGE_SEARCH_FILTERS:
+      return {
+        ...state,
+        messageSearchFilters: {
+          ...state.messageSearchFilters,
+          ...action.payload
+        }
       }
     default:
       return state
