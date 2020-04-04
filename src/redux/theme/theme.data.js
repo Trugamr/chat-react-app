@@ -73,7 +73,9 @@ export const light = {
     optionBg: colors.lightWhite,
     statusColors: {
       online: colors.pastelGreen,
+
       offline: colors.red,
+
       away: colors.yellow
     }
   },

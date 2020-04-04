@@ -2,7 +2,8 @@ import UserActionTypes from './user.types'
 
 const INITIAL_STATE = {
   currentUser: null,
-  isLoading: true
+  isLoading: true,
+  status: 'online'
 }
 
 const userReducer = (state = INITIAL_STATE, action) => {
@@ -23,6 +24,11 @@ const userReducer = (state = INITIAL_STATE, action) => {
         ...state,
         currentUser: action.payload,
         isLoading: false
+      }
+    case UserActionTypes.SET_USER_STATUS:
+      return {
+        ...state,
+        status: action.payload
       }
     default:
       return state

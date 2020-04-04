@@ -95,10 +95,11 @@ export const Line = styled.hr`
 `
 
 export const Options = styled.ul`
-  max-height: ${({ opened }) => (opened ? '120px' : '0px')};
+  max-height: ${({ opened }) => (opened ? '140px' : '0px')};
   width: 100%;
   background-color: ${({ theme }) => theme.userStatusCard.bg};
   position: absolute;
+  z-index: 2;
   top: 64px;
   border-radius: 0px 0px 14px 14px;
   transition: ease max-height 0.3s;
@@ -127,5 +128,42 @@ export const Options = styled.ul`
     &:hover {
       background-color: ${({ theme }) => theme.userStatusCard.optionBg};
     }
+
+    &.status-box {
+      padding: 0px;
+
+      &:hover {
+        background-color: transparent;
+      }
+    }
   }
+`
+
+export const Dots = styled.div`
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-gap: 6px;
+  grid-template-columns: repeat(3, 1fr);
+`
+
+export const Dot = styled.div`
+  background-color: ${({ theme }) => theme.userStatusCard.icon};
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
+  justify-content: center;
+`
+
+export const Circle = styled.div`
+  height: 12px;
+  width: 12px;
+  border-radius: 14px;
+  background-color: ${({ theme, name }) => {
+    if (name === 'online') return theme.userStatusCard.statusColors.online
+    else if (name === 'offline')
+      return theme.userStatusCard.statusColors.offline
+    else return theme.userStatusCard.statusColors.away
+  }};
 `

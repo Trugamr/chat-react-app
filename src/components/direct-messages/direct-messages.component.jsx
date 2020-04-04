@@ -4,7 +4,10 @@ import { createStructuredSelector } from 'reselect'
 
 import { FaPlusSquare } from 'react-icons/fa'
 
-import { selectCurrentUser } from '../../redux/user/user.selectors'
+import {
+  selectCurrentUser,
+  selectUserStatus
+} from '../../redux/user/user.selectors'
 
 import { firestore, database } from '../../firebase/firebase.utils'
 
@@ -40,6 +43,7 @@ class DirectMessages extends React.Component {
 
   addListeners = currentUserUid => {
     const { connectedRef, presenceRef } = this.state
+    const { userStatus } = this.props
 
     const usersListener = firestore.collection('users').onSnapshot(snapshot => {
       const otherUsers = snapshot.docs.filter(doc => doc.id !== currentUserUid)
@@ -70,7 +74,9 @@ class DirectMessages extends React.Component {
     connectedRef.on('value', snapshot => {
       if (snapshot.val()) {
         const ref = presenceRef.child(currentUserUid)
-        ref.set('online')
+        // set user status from state in case of connection disonnect and reconnect
+        // status will be restored from state
+        ref.set(userStatus)
         ref.onDisconnect().set('offline')
       }
     })
@@ -94,7 +100,6 @@ class DirectMessages extends React.Component {
 
     presenceRef.on('value', snapshot => {
       const usersPrescence = snapshot.val()
-      console.log(usersPrescence)
       Object.keys(usersPrescence).forEach(userId => {
         this.addStatusToUser(userId, usersPrescence[userId])
       })
@@ -153,7 +158,8 @@ class DirectMessages extends React.Component {
 }
 
 const mapStateToProps = createStructuredSelector({
-  currentUser: selectCurrentUser
+  currentUser: selectCurrentUser,
+  userStatus: selectUserStatus
 })
 
 export default connect(mapStateToProps)(DirectMessages)
