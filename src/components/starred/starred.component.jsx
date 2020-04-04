@@ -30,7 +30,7 @@ class Channels extends React.Component {
     return (
       <StarredContainer>
         <StarredHeading>
-          <span>Starred</span>
+          <span>STARRED</span>
           <FaStar
             onClick={this.openModal}
             style={{ alignSelf: 'flex-end' }}

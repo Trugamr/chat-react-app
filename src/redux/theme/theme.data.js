@@ -97,6 +97,17 @@ export const light = {
       buttonSeconday: colors.white
     }
   },
+  directMessages: {
+    bg: colors.lightBlue,
+    text: colors.blue,
+    hover: colors.lightBlue,
+    icon: colors.blue,
+    status: {
+      online: colors.green,
+      offline: colors.red,
+      away: colors.yellow
+    }
+  },
   spinner: {
     bg: colors.lightest,
     text: colors.blue,
