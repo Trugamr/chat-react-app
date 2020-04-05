@@ -43,21 +43,15 @@ class MessageInput extends React.Component {
   }
 
   sendMessage = () => {
-    const { message, channelsRef, loading } = this.state
-    const { currentChannel } = this.props
+    const { message, loading } = this.state
+
     if (!message || loading) return
 
     this.setState({ loading: true })
 
-    const messageRef = channelsRef
-      .doc(currentChannel.id)
-      .collection('messages')
-      .doc()
+    const [ref, messageRef] = this.getMessageRef()
 
-    channelsRef
-      .doc(currentChannel.id)
-      .collection('messages')
-      .doc(messageRef.id)
+    ref
       .set(this.createMessage({ id: messageRef.id }))
       .then(() => {
         this.setState({ loading: false, message: '' })
@@ -69,6 +63,36 @@ class MessageInput extends React.Component {
           loading: false
         }))
       })
+  }
+
+  getMessageRef = () => {
+    // return message ref according to public or private channel
+    const { currentChannel } = this.props
+    const { channelsRef } = this.state
+
+    let ref = null
+    let messageRef = null
+
+    if (currentChannel.type === 'direct') {
+      const directMessagesRef = firestore.collection(
+        `directMessages/${currentChannel.id}`
+      )
+      messageRef = directMessagesRef.doc()
+      ref = directMessagesRef.doc(messageRef.id)
+    } else {
+      // getting snapshot id first
+      messageRef = channelsRef
+        .doc(currentChannel.id)
+        .collection('messages')
+        .doc()
+      // setting ref to public channel
+      ref = channelsRef
+        .doc(currentChannel.id)
+        .collection('messages')
+        .doc(messageRef.id)
+    }
+
+    return [ref, messageRef]
   }
 
   handleConfirm = file => {
@@ -109,12 +133,20 @@ class MessageInput extends React.Component {
     return createdMessage
   }
 
+  getPath = () => {
+    const { currentChannel } = this.props
+    if (currentChannel && currentChannel.type === 'direct') {
+      return `chat/private-${currentChannel.id}`
+    } else {
+      return 'chat/public'
+    }
+  }
+
   uploadeFile = file => {
-    const { channelsRef, storageRef } = this.state
+    const { storageRef } = this.state
     const { currentChannel } = this.props
     const pathToUpload = currentChannel.id
-    const ref = channelsRef
-    const filePath = `chat/public/${uuidv4()}.jpg`
+    const filePath = `${this.getPath()}/${uuidv4()}.jpg`
 
     this.setState(
       {
@@ -143,7 +175,7 @@ class MessageInput extends React.Component {
             this.state.uploadTask.snapshot.ref
               .getDownloadURL()
               .then(downloadUrl => {
-                this.sendFileMessage(downloadUrl, ref, pathToUpload)
+                this.sendFileMessage(downloadUrl, pathToUpload)
               })
               .catch(err => {
                 console.error(err)
@@ -159,16 +191,10 @@ class MessageInput extends React.Component {
     )
   }
 
-  sendFileMessage = (fileUrl, ref, pathToUpload) => {
-    const messageRef = ref
-      .doc(pathToUpload)
-      .collection('messages')
-      .doc()
+  sendFileMessage = (fileUrl, pathToUpload) => {
+    const [ref, messageRef] = this.getMessageRef()
 
     ref
-      .doc(pathToUpload)
-      .collection('messages')
-      .doc(messageRef.id)
       .set(this.createMessage({ id: messageRef.id, fileUrl }))
       .then(() => {
         this.setState({
@@ -207,7 +233,9 @@ class MessageInput extends React.Component {
             autocomplete="off"
             placeholder={
               currentChannel && currentChannel.name
-                ? `message #${currentChannel.name}`
+                ? `message ${currentChannel.type === 'direct' ? '@' : '#'}${
+                    currentChannel.name
+                  }`
                 : 'message'
             }
           />

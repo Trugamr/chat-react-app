@@ -63,6 +63,11 @@ export const light = {
       text: colors.gray,
       placeholder: colors.littleLightGray,
       bg: colors.lightGray
+    },
+    status: {
+      online: colors.green,
+      offline: colors.red,
+      away: colors.yellow
     }
   },
   userStatusCard: {
@@ -73,9 +78,7 @@ export const light = {
     optionBg: colors.lightWhite,
     statusColors: {
       online: colors.pastelGreen,
-
       offline: colors.red,
-
       away: colors.yellow
     }
   },

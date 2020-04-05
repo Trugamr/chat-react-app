@@ -16,3 +16,13 @@ export const selectMessageSearchFilters = createSelector(
   [selectChat],
   chat => chat.messageSearchFilters
 )
+
+export const selectIsPrivateChannel = createSelector(
+  [selectChat],
+  chat => chat.isPrivateChannel
+)
+
+export const selectOtherUsersStatus = createSelector(
+  [selectChat],
+  chat => chat.otherUsersStatus
+)

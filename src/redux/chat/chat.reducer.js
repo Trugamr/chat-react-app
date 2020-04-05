@@ -5,7 +5,9 @@ const INITIAL_STATE = {
   channelMembers: 0,
   messageSearchFilters: {
     text: ''
-  }
+  },
+  isPrivateChannel: false,
+  otherUsersStatus: {}
 }
 
 const chatReducer = (state = INITIAL_STATE, action) => {
@@ -27,6 +29,16 @@ const chatReducer = (state = INITIAL_STATE, action) => {
           ...state.messageSearchFilters,
           ...action.payload
         }
+      }
+    case ChatActionTypes.SET_PRIVATE_CHANNEL:
+      return {
+        ...state,
+        isPrivateChannel: action.payload
+      }
+    case ChatActionTypes.SET_OTHER_USERS_STATUS:
+      return {
+        ...state,
+        otherUsersStatus: action.payload
       }
     default:
       return state

@@ -23,7 +23,7 @@ class Messages extends React.Component {
     const { currentChannel, currentUser } = this.props
 
     if (currentChannel && currentUser) {
-      this.addListeners(currentChannel.id)
+      this.addListeners(currentChannel.id, currentChannel.type)
     }
   }
 
@@ -54,16 +54,24 @@ class Messages extends React.Component {
     return []
   }
 
-  addListeners = channelId => {
+  addListeners = (channelId, channelType) => {
     const { messageListeners } = this.state
 
     if (!messageListeners[channelId]) {
-      // add listener
-      const messagesRef = firestore
-        .collection('channels')
-        .doc(channelId)
-        .collection('messages')
-        .orderBy('timestamp', 'asc')
+      let messagesRef = null
+
+      if (channelType === 'direct') {
+        // add listener for direct channel
+        messagesRef = firestore.collection(`directMessages/${channelId}`)
+      } else {
+        // add listener for public channel
+        messagesRef = firestore
+          .collection('channels')
+          .doc(channelId)
+          .collection('messages')
+      }
+
+      messagesRef = messagesRef.orderBy('timestamp', 'asc')
 
       const messageListener = messagesRef.onSnapshot(snapshot => {
         const channelMessages = snapshot.docs.map(message => message.data())
@@ -76,7 +84,10 @@ class Messages extends React.Component {
 
       // adding listener
       this.setState(({ messageListeners }) => ({
-        messageListeners: { ...messageListeners, [channelId]: messageListener },
+        messageListeners: {
+          ...messageListeners,
+          [channelId]: messageListener
+        },
         loading: true
       }))
     } else {

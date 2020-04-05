@@ -14,10 +14,17 @@ import {
   Members,
   SearchFieldContainer,
   Search,
-  SearchInput
+  SearchInput,
+  UserStatus,
+  Dot,
+  Status
 } from './channel-header.styles'
 
-import { selectChannelMembers } from '../../redux/chat/chat.selectors'
+import {
+  selectChannelMembers,
+  selectIsPrivateChannel,
+  selectOtherUsersStatus
+} from '../../redux/chat/chat.selectors'
 import { setMessageSearchFilters } from '../../redux/chat/chat.actions'
 
 class ChannelHeader extends React.Component {
@@ -25,7 +32,8 @@ class ChannelHeader extends React.Component {
     starred: true,
     filters: {
       text: ''
-    }
+    },
+    status: 'offline'
   }
 
   handleChange = event => {
@@ -62,9 +70,21 @@ class ChannelHeader extends React.Component {
     )
   }
 
+  getStatusForDM = () => {
+    const { otherUsersStatus, currentChannel } = this.props
+    if (currentChannel && currentChannel['uid']) {
+      return otherUsersStatus[currentChannel['uid']]
+    } else {
+      return 'offline'
+    }
+  }
+
   render() {
-    const { currentChannel, members } = this.props
+    const { currentChannel, members, privateChannel } = this.props
     const { starred, filters } = this.state
+
+    // status for direct message user
+    const status = this.getStatusForDM()
 
     return (
       <ChannelHeaderContainer>
@@ -72,13 +92,29 @@ class ChannelHeader extends React.Component {
           <>
             <ChannelInfo>
               <Heading>
-                <span># {currentChannel.name}</span>{' '}
-                {starred ? <FaStar size={26} /> : <FaRegStar size={26} />}
+                <span>
+                  {privateChannel ? '@' : '#'} {currentChannel.name}
+                </span>{' '}
+                {!privateChannel ? (
+                  starred ? (
+                    <FaStar size={26} />
+                  ) : (
+                    <FaRegStar size={26} />
+                  )
+                ) : null}
               </Heading>
-              <About>{currentChannel.details}</About>
-              <Members>
-                {members === 1 ? `${members} member` : `${members} members`}
-              </Members>
+              {!privateChannel ? (
+                <About>{currentChannel.details}</About>
+              ) : (
+                <UserStatus>
+                  <Dot status={status} /> <Status>{status}</Status>
+                </UserStatus>
+              )}
+              {!privateChannel ? (
+                <Members>
+                  {members === 1 ? `${members} member` : `${members} members`}
+                </Members>
+              ) : null}
             </ChannelInfo>
             <SearchFieldContainer>
               <Search>
@@ -108,7 +144,9 @@ class ChannelHeader extends React.Component {
 }
 
 const mapStateToProps = createStructuredSelector({
-  members: selectChannelMembers
+  members: selectChannelMembers,
+  privateChannel: selectIsPrivateChannel,
+  otherUsersStatus: selectOtherUsersStatus
 })
 
 const mapDispatchToProps = dispatch => ({

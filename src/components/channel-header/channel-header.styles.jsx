@@ -23,7 +23,6 @@ export const ChannelInfo = styled.div`
 
 export const Heading = styled.h2`
   font-size: 30px;
-  margin-bottom: 12px;
 
   svg {
     color: ${({ theme }) => theme.channelHeader.icon};
@@ -32,6 +31,7 @@ export const Heading = styled.h2`
 `
 
 export const About = styled.p`
+  margin-top: 12px;
   margin-bottom: 2px;
   opacity: 0.8;
 `
@@ -82,4 +82,30 @@ export const SearchInput = styled.input`
   &:focus {
     outline: none;
   }
+`
+
+export const UserStatus = styled.div`
+  display: flex;
+  align-items: center;
+  margin-top: 6px;
+  margin-left: 6px;
+`
+
+export const Dot = styled.div`
+  width: 10px;
+  height: 10px;
+  border-radius: 10px;
+
+  background-color: ${({ theme, status }) => {
+    const { directMessages } = theme
+    if (status === 'online') return directMessages.status.online
+    if (status === 'away') return directMessages.status.away
+    else return directMessages.status.offline
+  }};
+`
+
+export const Status = styled.p`
+  margin-left: 5px;
+  text-transform: capitalize;
+  opacity: 0.8;
 `

@@ -8,7 +8,10 @@ import AddChannelModal from '../add-channel-modal/add-channel-modal.component'
 
 import { selectCurrentUser } from '../../redux/user/user.selectors'
 import { selectCurrentChannel } from '../../redux/chat/chat.selectors'
-import { setCurrentChannel } from '../../redux/chat/chat.actions'
+import {
+  setCurrentChannel,
+  setPrivateChannel
+} from '../../redux/chat/chat.actions'
 
 import Spinner from '../spinner/spinner.component'
 
@@ -120,8 +123,9 @@ class Channels extends React.Component {
   }
 
   changeChannel = channel => {
-    const { setCurrentChannel } = this.props
+    const { setCurrentChannel, setPrivateChannel } = this.props
     setCurrentChannel(channel)
+    setPrivateChannel(false)
     this.setActiveChannel(channel)
   }
 
@@ -175,7 +179,8 @@ const mapStateToProps = createStructuredSelector({
 })
 
 const mapDispatchToProps = dispatch => ({
-  setCurrentChannel: channel => dispatch(setCurrentChannel(channel))
+  setCurrentChannel: channel => dispatch(setCurrentChannel(channel)),
+  setPrivateChannel: isPrivate => dispatch(setPrivateChannel(isPrivate))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Channels)

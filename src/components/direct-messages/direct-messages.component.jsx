@@ -9,6 +9,12 @@ import {
   selectUserStatus
 } from '../../redux/user/user.selectors'
 
+import {
+  setCurrentChannel,
+  setPrivateChannel,
+  setOtherUsersStatus
+} from '../../redux/chat/chat.actions'
+
 import { firestore, database } from '../../firebase/firebase.utils'
 
 import Spinner from '../spinner/spinner.component'
@@ -97,9 +103,13 @@ class DirectMessages extends React.Component {
 
   updateUsersStatus = () => {
     const { presenceRef } = this.state
+    const { setOtherUsersStatus } = this.props
 
     presenceRef.on('value', snapshot => {
       const usersPrescence = snapshot.val()
+
+      setOtherUsersStatus(usersPrescence)
+
       Object.keys(usersPrescence).forEach(userId => {
         this.addStatusToUser(userId, usersPrescence[userId])
       })
@@ -118,6 +128,28 @@ class DirectMessages extends React.Component {
     this.setState({
       users: updatedUsers
     })
+  }
+
+  changeChannel = user => {
+    const { setCurrentChannel, setPrivateChannel } = this.props
+    const channelId = this.getChannelId(user.uid)
+    const channelData = {
+      id: channelId,
+      name: user.name,
+      uid: user.uid,
+      type: 'direct'
+    }
+
+    setCurrentChannel(channelData)
+    setPrivateChannel(true)
+  }
+
+  getChannelId = userId => {
+    const { currentUser } = this.props
+    const currentUserId = currentUser.uid
+    return userId < currentUserId
+      ? `${userId}/${currentUserId}`
+      : `${currentUserId}/${userId}`
   }
 
   render() {
@@ -139,7 +171,7 @@ class DirectMessages extends React.Component {
               const { uid, name, status = 'offline', selected } = user
               return (
                 <DirectMessagesItem key={uid} selected={selected}>
-                  <User>
+                  <User onClick={() => this.changeChannel(user)}>
                     <Status status={status} /> <p>{name}</p>
                   </User>
                 </DirectMessagesItem>
@@ -162,4 +194,10 @@ const mapStateToProps = createStructuredSelector({
   userStatus: selectUserStatus
 })
 
-export default connect(mapStateToProps)(DirectMessages)
+const mapDispatchToProps = dispatch => ({
+  setCurrentChannel: channel => dispatch(setCurrentChannel(channel)),
+  setPrivateChannel: isPrivate => dispatch(setPrivateChannel(isPrivate)),
+  setOtherUsersStatus: usersStatus => dispatch(setOtherUsersStatus(usersStatus))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(DirectMessages)

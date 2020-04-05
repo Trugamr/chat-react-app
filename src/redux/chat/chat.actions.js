@@ -14,3 +14,13 @@ export const setMessageSearchFilters = filters => ({
   type: ChatActionTypes.SET_MESSAGE_SEARCH_FILTERS,
   payload: filters
 })
+
+export const setPrivateChannel = isPrivate => ({
+  type: ChatActionTypes.SET_PRIVATE_CHANNEL,
+  payload: isPrivate
+})
+
+export const setOtherUsersStatus = otherUsersStatus => ({
+  type: ChatActionTypes.SET_OTHER_USERS_STATUS,
+  payload: otherUsersStatus
+})
