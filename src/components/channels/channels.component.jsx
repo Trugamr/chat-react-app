@@ -22,18 +22,23 @@ import {
   ChannelsContainer,
   ChannelsHeading,
   ChannelsList,
-  ChannelItem
+  ChannelItem,
+  Name,
+  Notifications
 } from './channels.styles'
 
 import firebase, { firestore } from '../../firebase/firebase.utils'
 
 class Channels extends React.Component {
   state = {
+    channel: null,
     channels: [],
     channelName: '',
     channelDetails: '',
     channelsRef: firestore.collection('channels'),
     unsubscribeChannelListener: null,
+    notificationListeners: {},
+    notifications: [],
     modal: false,
     firstLoad: true,
     activeChannel: null
@@ -54,6 +59,9 @@ class Channels extends React.Component {
       .onSnapshot(snapshot => {
         const channels = snapshot.docs.map(doc => doc.data())
         this.setState({ channels: channels }, this.setFirstChannel)
+
+        // add notification listener for each channel
+        channels.forEach(channel => this.addNotificationListener(channel.id))
       })
 
     this.setState({
@@ -61,9 +69,70 @@ class Channels extends React.Component {
     })
   }
 
+  addNotificationListener = channelId => {
+    const { channelsRef } = this.state
+
+    const listener = channelsRef
+      .doc(channelId)
+      .collection('messages')
+      .onSnapshot(snapshot => {
+        if (this.state.channel) {
+          this.handleNotifications(
+            channelId,
+            this.state.channel.id,
+            this.state.notifications,
+            snapshot
+          )
+        }
+      })
+
+    this.setState(({ notificationListeners }) => ({
+      notificationListeners: { ...notificationListeners, [channelId]: listener }
+    }))
+  }
+
+  handleNotifications = (
+    channelId,
+    currentChannelId,
+    notifications,
+    snapshot
+  ) => {
+    let lastTotal = 0
+
+    const index = notifications.findIndex(
+      notification => notification.id === channelId
+    )
+
+    if (index !== -1) {
+      if (channelId !== currentChannelId) {
+        lastTotal = notifications[index].lastKnownTotal
+
+        if (snapshot.docs.length - lastTotal > 0) {
+          notifications[index].count = snapshot.docs.length - lastTotal
+          notifications[index].total = snapshot.docs.length
+        }
+      }
+    } else {
+      notifications.push({
+        id: channelId,
+        total: snapshot.docs.length,
+        lastKnownTotal: snapshot.docs.length,
+        count: 0
+      })
+    }
+
+    this.setState({
+      notifications
+    })
+  }
+
   removeListeners = () => {
     const { unsubscribeChannelListener } = this.state
     unsubscribeChannelListener()
+    const { notificationListeners } = this.state
+    Object.keys(notificationListeners).forEach(listener => {
+      notificationListeners[listener]()
+    })
   }
 
   setFirstChannel = () => {
@@ -72,7 +141,7 @@ class Channels extends React.Component {
     if (firstLoad && channels.length) {
       setCurrentChannel(channels[0])
       this.setActiveChannel(channels[0])
-      this.setState({ firstLoad: false })
+      this.setState({ firstLoad: false, channel: channels[0] })
     }
   }
 
@@ -130,6 +199,35 @@ class Channels extends React.Component {
     setCurrentChannel(channel)
     setPrivateChannel(false)
     this.setActiveChannel(channel)
+    this.setState({ channel }, () => this.clearNotifications())
+  }
+
+  clearNotifications = () => {
+    let index = this.state.notifications.findIndex(
+      notification => notification.id === this.state.channel.id
+    )
+
+    if (index !== -1) {
+      let updatedNotifications = [...this.state.notifications]
+      updatedNotifications[index].lastKnownTotal = this.state.notifications[
+        index
+      ].total
+      updatedNotifications[index].count = 0
+      this.setState({
+        notifications: updatedNotifications
+      })
+    }
+  }
+
+  getNotificationCount = channel => {
+    let count = 0
+    this.state.notifications.forEach(notification => {
+      if (notification.id === channel.id) {
+        count = notification.count
+      }
+    })
+
+    return count
   }
 
   render() {
@@ -166,7 +264,12 @@ class Channels extends React.Component {
                   selected={channel.id === activeChannel && !isPrivateChannel}
                   onClick={() => this.changeChannel(channel)}
                 >
-                  # {name}
+                  <Name># {name}</Name>{' '}
+                  {this.getNotificationCount(channel) ? (
+                    <Notifications>
+                      {this.getNotificationCount(channel)}
+                    </Notifications>
+                  ) : null}
                 </ChannelItem>
               )
             })}

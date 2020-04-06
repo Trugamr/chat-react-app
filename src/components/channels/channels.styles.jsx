@@ -27,12 +27,12 @@ export const ChannelsList = styled.ul`
 `
 
 export const ChannelItem = styled.li`
-  font-family: 'archiasemibold';
-  font-size: 16px;
-  color: ${({ theme }) => theme.channels.text};
   cursor: pointer;
   padding: 4px;
   border-radius: 8px;
+  display: flex;
+  align-items: center;
+
   background-color: ${({ selected, theme }) =>
     selected ? theme.channels.hover : 'transparent'};
   opacity: ${({ selected }) => (selected ? 1 : 0.8)};
@@ -46,4 +46,20 @@ export const ChannelItem = styled.li`
   &:hover {
     background-color: ${({ theme }) => theme.channels.hover};
   }
+`
+export const Name = styled.p`
+  font-family: 'archiasemibold';
+  font-size: 16px;
+  color: ${({ theme }) => theme.channels.text};
+  flex: 1 0;
+`
+
+export const Notifications = styled.span`
+  font-family: 'archiasemibold';
+  background-color: ${({ theme }) => theme.channels.notificationsBg};
+  color: ${({ theme }) => theme.channels.notificationsFg};
+  padding: 2px 4px;
+  font-size: 13px;
+  border-radius: 6px;
+  justify-self: flex-end;
 `

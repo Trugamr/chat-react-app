@@ -9,7 +9,7 @@ import {
   StarredItem
 } from './starred.styles'
 
-class Channels extends React.Component {
+class Starred extends React.Component {
   state = {
     channels: [
       {
@@ -52,4 +52,4 @@ class Channels extends React.Component {
   }
 }
 
-export default Channels
+export default Starred

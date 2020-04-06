@@ -100,7 +100,9 @@ export const light = {
       textSecondary: colors.white,
       buttonPrimary: colors.blue,
       buttonSeconday: colors.white
-    }
+    },
+    notificationsBg: colors.white,
+    notificationsFg: colors.blue
   },
   directMessages: {
     bg: colors.lightBlue,
