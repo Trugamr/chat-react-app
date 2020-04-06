@@ -15,6 +15,8 @@ import {
   setOtherUsersStatus
 } from '../../redux/chat/chat.actions'
 
+import { selectIsPrivateChannel } from '../../redux/chat/chat.selectors'
+
 import { firestore, database } from '../../firebase/firebase.utils'
 
 import Spinner from '../spinner/spinner.component'
@@ -33,7 +35,8 @@ class DirectMessages extends React.Component {
     users: [],
     usersListener: null,
     connectedRef: database.ref('.info/connected'),
-    presenceRef: database.ref('presence')
+    presenceRef: database.ref('presence'),
+    activeChannel: null
   }
 
   componentDidMount() {
@@ -142,6 +145,7 @@ class DirectMessages extends React.Component {
 
     setCurrentChannel(channelData)
     setPrivateChannel(true)
+    this.setActiveChannel(channelId)
   }
 
   getChannelId = userId => {
@@ -152,8 +156,13 @@ class DirectMessages extends React.Component {
       : `${currentUserId}/${userId}`
   }
 
+  setActiveChannel = channelId => {
+    this.setState({ activeChannel: channelId })
+  }
+
   render() {
-    const { users } = this.state
+    const { users, activeChannel } = this.state
+    const { isPrivateChannel } = this.props
 
     return (
       <DirectMessagesContainer>
@@ -168,9 +177,14 @@ class DirectMessages extends React.Component {
         {users.length ? (
           <DirectMessagesList>
             {users.map(user => {
-              const { uid, name, status = 'offline', selected } = user
+              const { uid, name, status = 'offline' } = user
               return (
-                <DirectMessagesItem key={uid} selected={selected}>
+                <DirectMessagesItem
+                  key={uid}
+                  selected={
+                    activeChannel === this.getChannelId(uid) && isPrivateChannel
+                  }
+                >
                   <User onClick={() => this.changeChannel(user)}>
                     <Status status={status} /> <p>{name}</p>
                   </User>
@@ -191,7 +205,8 @@ class DirectMessages extends React.Component {
 
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
-  userStatus: selectUserStatus
+  userStatus: selectUserStatus,
+  isPrivateChannel: selectIsPrivateChannel
 })
 
 const mapDispatchToProps = dispatch => ({

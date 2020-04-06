@@ -7,7 +7,10 @@ import { FaPlusSquare } from 'react-icons/fa'
 import AddChannelModal from '../add-channel-modal/add-channel-modal.component'
 
 import { selectCurrentUser } from '../../redux/user/user.selectors'
-import { selectCurrentChannel } from '../../redux/chat/chat.selectors'
+import {
+  selectCurrentChannel,
+  selectIsPrivateChannel
+} from '../../redux/chat/chat.selectors'
 import {
   setCurrentChannel,
   setPrivateChannel
@@ -131,6 +134,7 @@ class Channels extends React.Component {
 
   render() {
     const { channels, modal, activeChannel, firstLoad } = this.state
+    const { isPrivateChannel } = this.props
 
     return (
       <ChannelsContainer>
@@ -159,7 +163,7 @@ class Channels extends React.Component {
               return (
                 <ChannelItem
                   key={id}
-                  selected={channel.id === activeChannel}
+                  selected={channel.id === activeChannel && !isPrivateChannel}
                   onClick={() => this.changeChannel(channel)}
                 >
                   # {name}
@@ -175,7 +179,8 @@ class Channels extends React.Component {
 
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
-  currentChannel: selectCurrentChannel
+  currentChannel: selectCurrentChannel,
+  isPrivateChannel: selectIsPrivateChannel
 })
 
 const mapDispatchToProps = dispatch => ({
