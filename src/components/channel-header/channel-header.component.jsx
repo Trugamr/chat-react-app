@@ -25,15 +25,21 @@ import {
   selectIsPrivateChannel,
   selectOtherUsersStatus
 } from '../../redux/chat/chat.selectors'
-import { setMessageSearchFilters } from '../../redux/chat/chat.actions'
+
+import {
+  setMessageSearchFilters,
+  setStarredChannels
+} from '../../redux/chat/chat.actions'
+
+import { firestore } from '../../firebase/firebase.utils'
 
 class ChannelHeader extends React.Component {
   state = {
-    starred: true,
     filters: {
       text: ''
     },
-    status: 'offline'
+    status: 'offline',
+    usersRef: firestore.collection('users')
   }
 
   handleChange = event => {
@@ -49,6 +55,24 @@ class ChannelHeader extends React.Component {
         this.setFilters(this.state.filters)
       }
     )
+  }
+
+  unsubscribeStarredListener = null
+
+  componentDidMount() {
+    const { usersRef } = this.state
+    const { currentUser, setStarredChannels } = this.props
+
+    this.unsubscribeStarredListener = usersRef
+      .doc(currentUser.uid)
+      .onSnapshot(snapshot => {
+        const starred = snapshot.data()['starred']
+        setStarredChannels(starred)
+      })
+  }
+
+  componentWillUnmount() {
+    this.unsubscribeStarredListener()
   }
 
   setFilters = filters => {
@@ -79,9 +103,50 @@ class ChannelHeader extends React.Component {
     }
   }
 
+  handleStar = starred => {
+    this.starChannel(starred)
+  }
+
+  starChannel = () => {
+    const { usersRef } = this.state
+    const { currentUser, currentChannel } = this.props
+
+    let starredChannels = []
+
+    // check if starred property exists on user first
+    usersRef
+      .doc(currentUser.uid)
+      .get()
+      .then(snapshot => {
+        const data = snapshot.data()
+        if (data['starred']) {
+          starredChannels = [...data['starred']]
+        } else {
+          starredChannels = []
+        }
+
+        // check if channel already starred
+        const index = starredChannels.indexOf(currentChannel.id)
+        if (index === -1) {
+          starredChannels.push(currentChannel.id)
+        } else {
+          starredChannels.splice(index, 1)
+        }
+
+        // push new starred channels array to firebase
+        usersRef
+          .doc(currentUser.uid)
+          .update({
+            starred: starredChannels
+          })
+          .then(() => console.log('starred channels updated'))
+          .catch(err => console.error(err))
+      })
+  }
+
   render() {
     const { currentChannel, members, privateChannel } = this.props
-    const { starred, filters } = this.state
+    const { filters } = this.state
 
     // status for direct message user
     const status = this.getStatusForDM()
@@ -96,10 +161,10 @@ class ChannelHeader extends React.Component {
                   {privateChannel ? '@' : '#'} {currentChannel.name}
                 </span>{' '}
                 {!privateChannel ? (
-                  starred ? (
-                    <FaStar size={26} />
+                  currentChannel.starred ? (
+                    <FaStar size={26} onClick={() => this.handleStar()} />
                   ) : (
-                    <FaRegStar size={26} />
+                    <FaRegStar size={26} onClick={() => this.handleStar()} />
                   )
                 ) : null}
               </Heading>
@@ -150,7 +215,10 @@ const mapStateToProps = createStructuredSelector({
 })
 
 const mapDispatchToProps = dispatch => ({
-  setMessageSearchFilters: filters => dispatch(setMessageSearchFilters(filters))
+  setMessageSearchFilters: filters =>
+    dispatch(setMessageSearchFilters(filters)),
+  setStarredChannels: starredChannels =>
+    dispatch(setStarredChannels(starredChannels))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ChannelHeader)

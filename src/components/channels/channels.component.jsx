@@ -8,12 +8,14 @@ import AddChannelModal from '../add-channel-modal/add-channel-modal.component'
 
 import { selectCurrentUser } from '../../redux/user/user.selectors'
 import {
+  selectChannels,
   selectCurrentChannel,
   selectIsPrivateChannel
 } from '../../redux/chat/chat.selectors'
 import {
   setCurrentChannel,
-  setPrivateChannel
+  setPrivateChannel,
+  setChannels
 } from '../../redux/chat/chat.actions'
 
 import Spinner from '../spinner/spinner.component'
@@ -32,7 +34,6 @@ import firebase, { firestore } from '../../firebase/firebase.utils'
 class Channels extends React.Component {
   state = {
     channel: null,
-    channels: [],
     channelName: '',
     channelDetails: '',
     channelsRef: firestore.collection('channels'),
@@ -48,17 +49,24 @@ class Channels extends React.Component {
     this.addListeners()
   }
 
+  componentDidUpdate() {
+    const { channels } = this.props
+    if (channels) this.setFirstChannel()
+  }
+
   componentWillUnmount() {
     this.removeListeners()
   }
 
   addListeners = () => {
     const { channelsRef } = this.state
+    const { setChannels } = this.props
+
     const unsubscribe = channelsRef
       .orderBy('createdAt', 'asc')
       .onSnapshot(snapshot => {
         const channels = snapshot.docs.map(doc => doc.data())
-        this.setState({ channels: channels }, this.setFirstChannel)
+        setChannels(channels)
 
         // add notification listener for each channel
         channels.forEach(channel => this.addNotificationListener(channel.id))
@@ -136,8 +144,8 @@ class Channels extends React.Component {
   }
 
   setFirstChannel = () => {
-    const { firstLoad, channels } = this.state
-    const { setCurrentChannel } = this.props
+    const { firstLoad } = this.state
+    const { setCurrentChannel, channels } = this.props
     if (firstLoad && channels.length) {
       setCurrentChannel(channels[0])
       this.setActiveChannel(channels[0])
@@ -231,8 +239,8 @@ class Channels extends React.Component {
   }
 
   render() {
-    const { channels, modal, activeChannel, firstLoad } = this.state
-    const { isPrivateChannel } = this.props
+    const { modal, firstLoad } = this.state
+    const { isPrivateChannel, currentChannel, channels } = this.props
 
     return (
       <ChannelsContainer>
@@ -261,7 +269,9 @@ class Channels extends React.Component {
               return (
                 <ChannelItem
                   key={id}
-                  selected={channel.id === activeChannel && !isPrivateChannel}
+                  selected={
+                    channel.id === currentChannel.id && !isPrivateChannel
+                  }
                   onClick={() => this.changeChannel(channel)}
                 >
                   <Name># {name}</Name>{' '}
@@ -282,11 +292,13 @@ class Channels extends React.Component {
 
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
+  channels: selectChannels,
   currentChannel: selectCurrentChannel,
   isPrivateChannel: selectIsPrivateChannel
 })
 
 const mapDispatchToProps = dispatch => ({
+  setChannels: channels => dispatch(setChannels(channels)),
   setCurrentChannel: channel => dispatch(setCurrentChannel(channel)),
   setPrivateChannel: isPrivate => dispatch(setPrivateChannel(isPrivate))
 })

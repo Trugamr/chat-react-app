@@ -2,16 +2,23 @@ import ChatActionTypes from './chat.types'
 
 const INITIAL_STATE = {
   currentChannel: null,
+  channels: null,
   channelMembers: 0,
   messageSearchFilters: {
     text: ''
   },
   isPrivateChannel: false,
-  otherUsersStatus: {}
+  otherUsersStatus: {},
+  starredChannels: null
 }
 
 const chatReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
+    case ChatActionTypes.SET_CHANNELS:
+      return {
+        ...state,
+        channels: action.payload
+      }
     case ChatActionTypes.SET_CURRENT_CHANNEL:
       return {
         ...state,
@@ -39,6 +46,11 @@ const chatReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         otherUsersStatus: action.payload
+      }
+    case ChatActionTypes.SET_STARRED_CHANNELS:
+      return {
+        ...state,
+        starredChannels: action.payload
       }
     default:
       return state

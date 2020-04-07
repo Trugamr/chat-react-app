@@ -1,5 +1,10 @@
 import ChatActionTypes from './chat.types'
 
+export const setChannels = channels => ({
+  type: ChatActionTypes.SET_CHANNELS,
+  payload: channels
+})
+
 export const setCurrentChannel = channel => ({
   type: ChatActionTypes.SET_CURRENT_CHANNEL,
   payload: channel
@@ -23,4 +28,9 @@ export const setPrivateChannel = isPrivate => ({
 export const setOtherUsersStatus = otherUsersStatus => ({
   type: ChatActionTypes.SET_OTHER_USERS_STATUS,
   payload: otherUsersStatus
+})
+
+export const setStarredChannels = starredChannels => ({
+  type: ChatActionTypes.SET_STARRED_CHANNELS,
+  payload: starredChannels
 })

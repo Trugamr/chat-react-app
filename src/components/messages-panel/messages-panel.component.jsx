@@ -14,7 +14,10 @@ import { selectCurrentChannel } from '../../redux/chat/chat.selectors'
 const MessagesPanel = ({ currentUser, currentChannel }) => {
   return (
     <MessagesPanelContainer>
-      <ChannelHeader currentChannel={currentChannel} />
+      <ChannelHeader
+        currentUser={currentUser}
+        currentChannel={currentChannel}
+      />
       <Messages currentUser={currentUser} currentChannel={currentChannel} />
       <MessageInput currentUser={currentUser} currentChannel={currentChannel} />
     </MessagesPanelContainer>

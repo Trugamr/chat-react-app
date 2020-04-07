@@ -46,3 +46,13 @@ export const StarredItem = styled.li`
     background-color: ${({ theme }) => theme.starred.hover};
   }
 `
+
+export const PlaceholderText = styled.p`
+  width: 100%;
+  text-align: center;
+  padding: 10px;
+  font-family: 'archiaregular';
+  font-size: 15px;
+  color: ${({ theme }) => theme.starred.text};
+  opacity: 0.9;
+`
