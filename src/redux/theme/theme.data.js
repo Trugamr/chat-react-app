@@ -115,6 +115,11 @@ export const light = {
       away: colors.yellow
     }
   },
+  meta: {
+    bg: colors.white,
+    textPrimary: colors.black,
+    textSecondary: colors.gray
+  },
   spinner: {
     bg: colors.lightest,
     text: colors.blue,

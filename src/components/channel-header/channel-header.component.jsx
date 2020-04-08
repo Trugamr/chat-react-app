@@ -177,7 +177,9 @@ class ChannelHeader extends React.Component {
               )}
               {!privateChannel ? (
                 <Members>
-                  {members === 1 ? `${members} member` : `${members} members`}
+                  {members && members.count === 1
+                    ? `${members.count} member`
+                    : `${members.count} members`}
                 </Members>
               ) : null}
             </ChannelInfo>

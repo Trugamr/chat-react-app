@@ -96,7 +96,10 @@ class Messages extends React.Component {
       const { updateMembers, currentChannel } = this.props
 
       if (currentChannel && messages[currentChannel.id]) {
-        updateMembers(this.countUniqueMembers(messages[currentChannel.id]))
+        updateMembers({
+          count: this.countUniqueMembers(messages[currentChannel.id]),
+          members: this.getDetailsForMembers(messages[currentChannel.id])
+        })
       }
     }
   }
@@ -126,6 +129,36 @@ class Messages extends React.Component {
     }, [])
 
     return uniqueMembers.length
+  }
+
+  getDetailsForMembers = (messages = []) => {
+    const members = {}
+    console.log(messages)
+
+    messages.forEach(message => {
+      const {
+        user: { id, name, avatar }
+      } = message
+      members[id] = {
+        name,
+        avatar,
+        messagesCount:
+          members[id] && members[id]['messagesCount']
+            ? members[id]['messagesCount'] + 1
+            : 1
+      }
+    })
+
+    return Object.keys(members)
+      .map(userId => ({
+        ...members[userId],
+        id: userId
+      }))
+      .sort((prev, next) => {
+        if (prev.messagesCount > next.messagesCount) return -1
+        else if (prev.messagesCount < next.messagesCount) return 1
+        else return 0
+      })
   }
 
   render() {

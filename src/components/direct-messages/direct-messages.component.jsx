@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 
-import { FaPlusSquare } from 'react-icons/fa'
+import { MdMessage } from 'react-icons/md'
 
 import {
   selectCurrentUser,
@@ -168,7 +168,7 @@ class DirectMessages extends React.Component {
       <DirectMessagesContainer>
         <DirectMessagesHeading>
           <span>DIRECT MESSAGES</span>
-          <FaPlusSquare
+          <MdMessage
             onClick={this.openModal}
             style={{ alignSelf: 'flex-end' }}
             size={20}
