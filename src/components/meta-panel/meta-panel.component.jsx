@@ -50,17 +50,20 @@ const MetaPanel = ({ currentChannel, channelMembers, isPrivateChannel }) => {
         channelMembers.members.length ? (
           <ActiveMembers>
             <h2>Active Members</h2>
-            {channelMembers.members.map(({ name, avatar, messagesCount }) => (
-              <Member>
-                <img src={avatar} alt="avatar" />
-                <Info>
-                  <h2>{name}</h2>
-                  <span>
-                    {messagesCount} {messagesCount > 1 ? 'messages' : 'message'}{' '}
-                  </span>
-                </Info>
-              </Member>
-            ))}
+            {channelMembers.members.map(
+              ({ name, avatar, messagesCount }, index) => (
+                <Member key={index}>
+                  <img src={avatar} alt="avatar" />
+                  <Info>
+                    <h2>{name}</h2>
+                    <span>
+                      {messagesCount}{' '}
+                      {messagesCount > 1 ? 'messages' : 'message'}{' '}
+                    </span>
+                  </Info>
+                </Member>
+              )
+            )}
           </ActiveMembers>
         ) : null}
       </Meta>

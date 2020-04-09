@@ -80,6 +80,14 @@ export const light = {
       online: colors.pastelGreen,
       offline: colors.red,
       away: colors.yellow
+    },
+    modal: {
+      bg: colors.lightBlue,
+      modalBg: colors.white,
+      textPrimary: colors.blue,
+      textSecondary: colors.white,
+      buttonPrimary: colors.blue,
+      buttonSeconday: colors.white
     }
   },
   starred: {

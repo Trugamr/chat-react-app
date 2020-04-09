@@ -11,6 +11,7 @@
     "moment": "^2.24.0",
     "node-sass": "^4.13.1",
     "react": "^16.13.1",
+    "react-avatar-editor": "^12.0.0-beta.0",
     "react-dom": "^16.13.1",
     "react-icons": "^3.9.0",
     "react-redux": "^7.2.0",

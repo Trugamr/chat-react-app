@@ -6,7 +6,12 @@ import { useTheme } from 'styled-components'
 import { FaUser, FaGlobeAsia } from 'react-icons/fa'
 import { MdExitToApp } from 'react-icons/md'
 
-import { auth, database } from '../../firebase/firebase.utils'
+import {
+  auth,
+  database,
+  firestore,
+  storage
+} from '../../firebase/firebase.utils'
 
 import {
   selectCurrentUser,
@@ -31,6 +36,8 @@ import {
   Line
 } from './user-status-card.styles'
 
+import ChangeAvatarModal from '../change-avatar-modal/change-avatar-modal.component'
+
 const ArrowSVG = props => {
   const theme = useTheme()
 
@@ -48,6 +55,7 @@ const UserStatusCard = ({ currentUser, status, setUserStatus }) => {
   const theme = useTheme()
   const [opened, setOpened] = useState(false)
   const [statusBox, setStatusBox] = useState(false)
+  const [modal, showModal] = useState(true)
 
   const handleStatusChange = status => {
     setStatusBox(false)
@@ -61,19 +69,68 @@ const UserStatusCard = ({ currentUser, status, setUserStatus }) => {
       })
   }
 
-  const {
-    displayName = 'Blind Specter',
-    photoURL = 'https://i.imgur.com/hCb3ysS.png'
-  } = currentUser
-
   const handleSignout = () => {
     auth.signOut().then(x => {
       console.log('signed out ')
     })
   }
 
+  const handleModalConfirm = avatarBlob => {
+    uploadCroppedImage(avatarBlob)
+    showModal(false)
+  }
+
+  const handleModalClose = () => {
+    showModal(false)
+  }
+
+  const updateAvatarImage = url => {
+    // THIS WILL BE USELESS AFTER I UPDATE HOW INITiAL USER AVATAR
+    // IMAGE SYSTEM WORKS DUE TO STATIC URLS
+
+    auth.currentUser
+      .updateProfile({
+        photoURL: url
+      })
+      .then(() => {
+        console.log('photoURL updated')
+      })
+      .catch(err => console.error(err))
+
+    firestore
+      .doc(`users/${currentUser.uid}`)
+      .update({
+        avatar: url
+      })
+      .then(() => {
+        console.log('user avatar update')
+      })
+      .catch(err => console.error(err))
+  }
+
+  const uploadCroppedImage = imageBlob => {
+    storage
+      .ref()
+      .child(`avatars/user-${currentUser.uid}`)
+      .put(imageBlob, { contentType: 'image/jpeg' })
+      .then(snapshot => {
+        snapshot.ref.getDownloadURL().then(url => updateAvatarImage(url))
+      })
+  }
+
+  const {
+    displayName = 'Blind Specter',
+    photoURL = 'https://i.imgur.com/hCb3ysS.png'
+  } = currentUser
+
   return (
     <UserAndOptionsContainer opened={opened}>
+      <ChangeAvatarModal
+        showing={modal}
+        close={handleModalClose}
+        confirm={handleModalConfirm}
+      />
+
       <UserStatusCardContainer>
         <UserAvatar>
           <img src={photoURL} alt="user avatar" />
@@ -114,7 +171,7 @@ const UserStatusCard = ({ currentUser, status, setUserStatus }) => {
           </li>
         ) : null}
 
-        <li>
+        <li onClick={() => showModal(true)}>
           <FaUser color={theme.userStatusCard.icon} />
           <span>change avatar</span>
         </li>

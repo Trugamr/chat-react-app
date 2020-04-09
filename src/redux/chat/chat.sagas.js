@@ -16,12 +16,14 @@ function* updateChannelsAfterStarred({ payload }) {
   yield put(setChannels(channelsWithStarred))
   // update current channel to have starred property
   let currentChannel = yield select(selectCurrentChannel)
-  if (starred.includes(currentChannel.id)) {
-    currentChannel = { ...currentChannel, starred: true }
-  } else {
-    currentChannel = { ...currentChannel, starred: false }
+  if (starred) {
+    if (starred.includes(currentChannel.id)) {
+      currentChannel = { ...currentChannel, starred: true }
+    } else {
+      currentChannel = { ...currentChannel, starred: false }
+    }
+    yield put(setCurrentChannel(currentChannel))
   }
-  yield put(setCurrentChannel(currentChannel))
 }
 
 export function* onSetCurrentChannel() {
