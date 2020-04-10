@@ -6,17 +6,14 @@ import { useTheme } from 'styled-components'
 import { FaUser, FaGlobeAsia } from 'react-icons/fa'
 import { MdExitToApp } from 'react-icons/md'
 
-import {
-  auth,
-  database,
-  firestore,
-  storage
-} from '../../firebase/firebase.utils'
+import { auth, database, storage } from '../../firebase/firebase.utils'
 
 import {
   selectCurrentUser,
   selectUserStatus
 } from '../../redux/user/user.selectors'
+
+import { setCurrentUser } from '../../redux/user/user.actions'
 
 import { setUserStatus } from '../../redux/user/user.actions'
 
@@ -51,11 +48,16 @@ const ArrowSVG = props => {
   )
 }
 
-const UserStatusCard = ({ currentUser, status, setUserStatus }) => {
+const UserStatusCard = ({
+  currentUser,
+  status,
+  setUserStatus,
+  setCurrentUser
+}) => {
   const theme = useTheme()
   const [opened, setOpened] = useState(false)
   const [statusBox, setStatusBox] = useState(false)
-  const [modal, showModal] = useState(true)
+  const [modal, showModal] = useState(false)
 
   const handleStatusChange = status => {
     setStatusBox(false)
@@ -85,27 +87,30 @@ const UserStatusCard = ({ currentUser, status, setUserStatus }) => {
   }
 
   const updateAvatarImage = url => {
+    // just refreshing page to show updated image as url remains same user reset wont help
+    window.location.reload()
+
     // THIS WILL BE USELESS AFTER I UPDATE HOW INITiAL USER AVATAR
     // IMAGE SYSTEM WORKS DUE TO STATIC URLS
 
-    auth.currentUser
-      .updateProfile({
-        photoURL: url
-      })
-      .then(() => {
-        console.log('photoURL updated')
-      })
-      .catch(err => console.error(err))
+    // auth.currentUser
+    //   .updateProfile({
+    //     photoURL: url
+    //   })
+    //   .then(() => {
+    //     console.log('photoURL updated')
+    //   })
+    //   .catch(err => console.error(err))
 
-    firestore
-      .doc(`users/${currentUser.uid}`)
-      .update({
-        avatar: url
-      })
-      .then(() => {
-        console.log('user avatar update')
-      })
-      .catch(err => console.error(err))
+    // firestore
+    //   .doc(`users/${currentUser.uid}`)
+    //   .update({
+    //     avatar: url
+    //   })
+    //   .then(() => {
+    //     console.log('user avatar update')
+    //   })
+    //   .catch(err => console.error(err))
   }
 
   const uploadCroppedImage = imageBlob => {
@@ -118,10 +123,7 @@ const UserStatusCard = ({ currentUser, status, setUserStatus }) => {
       })
   }
 
-  const {
-    displayName = 'Blind Specter',
-    photoURL = 'https://i.imgur.com/hCb3ysS.png'
-  } = currentUser
+  const { displayName, photoURL } = currentUser
 
   return (
     <UserAndOptionsContainer opened={opened}>
@@ -190,7 +192,8 @@ const mapStateToProps = createStructuredSelector({
 })
 
 const mapDispatchToProps = dispatch => ({
-  setUserStatus: status => dispatch(setUserStatus(status))
+  setUserStatus: status => dispatch(setUserStatus(status)),
+  setCurrentUser: user => dispatch(setCurrentUser(user))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserStatusCard)

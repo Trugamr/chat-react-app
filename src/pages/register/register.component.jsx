@@ -1,5 +1,5 @@
 import React from 'react'
-import { auth, firestore } from '../../firebase/firebase.utils'
+import { auth, firestore, storage } from '../../firebase/firebase.utils'
 import md5 from 'md5'
 
 import {
@@ -70,15 +70,18 @@ class RegisterPage extends React.Component {
 
     auth
       .createUserWithEmailAndPassword(email, password)
-      .then(createdUser => {
+      .then(async createdUser => {
         console.log(createdUser)
+
+        const avatarURL = await this.getAvatarUrl({
+          email,
+          uid: createdUser.user.uid
+        })
 
         createdUser.user
           .updateProfile({
             displayName: username,
-            photoURL: `https://gravatar.com/avatar/${md5(
-              createdUser.user.email
-            )}?d=retro`
+            photoURL: avatarURL
           })
           .then(() => {
             this.saveUser(createdUser).then(() => {
@@ -89,21 +92,19 @@ class RegisterPage extends React.Component {
           .catch(err => {
             console.error(err)
             this.setState(({ errors }) => ({
-              errors: errors.concat(err),
-              loading: false
+              errors: errors.concat(err)
             }))
           })
       })
       .catch(err => {
         console.error(err)
         this.setState(({ errors }) => ({
-          errors: errors.concat(err),
-          loading: false
+          errors: errors.concat(err)
         }))
       })
-    // .finally(() => {
-    //   this.setState({ loading: false })
-    // })
+      .finally(() => {
+        this.setState({ loading: false })
+      })
   }
 
   saveUser = createdUser => {
@@ -123,6 +124,32 @@ class RegisterPage extends React.Component {
 
   handleInputError(errors, inputName) {
     return errors.some(error => error.message.toLowerCase().includes(inputName))
+  }
+
+  getAvatarUrl = ({ email, uid }) => {
+    return new Promise((resolve, reject) => {
+      fetch(`https://gravatar.com/avatar/${md5(email)}?d=retro`, {
+        mode: 'cors'
+      })
+        .then(res => res.blob())
+        .then(blob => {
+          storage
+            .ref()
+            .child(`avatars/user-${uid}`)
+            .put(blob, { contentType: 'image/jpeg' })
+            .then(snapshot => {
+              snapshot.ref.getDownloadURL().then(url => resolve(url))
+            })
+            .catch(err => {
+              console.error(err)
+              reject(err)
+            })
+        })
+        .catch(err => {
+          console.error(err)
+          reject(err)
+        })
+    })
   }
 
   render() {

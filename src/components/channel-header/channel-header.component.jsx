@@ -66,8 +66,10 @@ class ChannelHeader extends React.Component {
     this.unsubscribeStarredListener = usersRef
       .doc(currentUser.uid)
       .onSnapshot(snapshot => {
-        const starred = snapshot.data()['starred']
-        setStarredChannels(starred)
+        const starred = snapshot.data()
+        if (starred) {
+          setStarredChannels(starred['starred'])
+        }
       })
   }
 
