@@ -40,14 +40,15 @@ export const MessagesContainer = styled.div`
   min-height: 100%;
   border-radius: 14px;
   padding: 20px;
-  position: relative;
   background-color: ${({ theme }) => theme.messages.bg};
+  display: flex;
+  flex-direction: column;
 `
 
 export const Container = styled.div`
   width: 100%;
-  height: 100%;
   overflow-y: auto;
+  flex: 1 0;
 
   > :nth-child(n) {
     margin-bottom: 12px;
@@ -58,4 +59,9 @@ export const Container = styled.div`
   }
 
   ${scrollbar}
+`
+
+export const TypingContainer = styled.div`
+  align-self: flex-end;
+  width: 100%;
 `

@@ -13,6 +13,7 @@ export const colors = {
   littleLightGray: 'rgba(108, 117, 125, 0.5)',
   littleLighterGray: 'rgba(108, 117, 125, 0.25)',
   lightGray: 'rgba(108, 117, 125, 0.12)',
+  veryLightGray: 'rgba(108, 117, 125, 0.06)',
   black: '#3E3E3E',
   white: '#FFFFFF',
   lightWhite: 'rgba(255, 255, 255, 0.2)',
@@ -42,6 +43,11 @@ export const light = {
   },
   messages: {
     bg: colors.white
+  },
+  typingUsers: {
+    itemBg: colors.veryLightGray,
+    dot: colors.gray,
+    text: colors.gray
   },
   messageInput: {
     bg: colors.white,

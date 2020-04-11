@@ -2,10 +2,15 @@ import React from 'react'
 import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
 
-import { MessagesContainer, Container } from './messages.styles'
+import {
+  MessagesContainer,
+  Container,
+  TypingContainer
+} from './messages.styles'
 
 import Message from '../message/message.component'
 import Spinner from '../spinner/spinner.component'
+import TypingUsers from '../typing-users/typing-users.container'
 
 import { updateChannelMembers } from '../../redux/chat/chat.actions'
 import { selectMessageSearchFilters } from '../../redux/chat/chat.selectors'
@@ -176,6 +181,12 @@ class Messages extends React.Component {
             <Spinner style={{ backgroundColor: 'transparent' }} />
           )}
         </Container>
+
+        {currentChannel && (
+          <TypingContainer>
+            <TypingUsers />
+          </TypingContainer>
+        )}
       </MessagesContainer>
     )
   }

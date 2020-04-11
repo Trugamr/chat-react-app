@@ -29,7 +29,7 @@ import {
   Notifications
 } from './channels.styles'
 
-import firebase, { firestore } from '../../firebase/firebase.utils'
+import firebase, { firestore, database } from '../../firebase/firebase.utils'
 
 class Channels extends React.Component {
   state = {
@@ -37,6 +37,7 @@ class Channels extends React.Component {
     channelName: '',
     channelDetails: '',
     channelsRef: firestore.collection('channels'),
+    typingRef: database.ref('typing'),
     unsubscribeChannelListener: null,
     notificationListeners: {},
     notifications: [],
@@ -203,7 +204,14 @@ class Channels extends React.Component {
   }
 
   changeChannel = channel => {
-    const { setCurrentChannel, setPrivateChannel } = this.props
+    const { typingRef } = this.state
+    const {
+      setCurrentChannel,
+      setPrivateChannel,
+      currentUser,
+      currentChannel
+    } = this.props
+    typingRef.child(currentChannel.id).child(currentUser.uid).remove()
     setCurrentChannel(channel)
     setPrivateChannel(false)
     this.setActiveChannel(channel)

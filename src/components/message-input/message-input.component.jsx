@@ -15,12 +15,17 @@ import {
   ProgressBar
 } from './message-input.styles'
 
-import firebase, { firestore, storage } from '../../firebase/firebase.utils'
+import firebase, {
+  firestore,
+  storage,
+  database
+} from '../../firebase/firebase.utils'
 
 class MessageInput extends React.Component {
   state = {
     channelsRef: firestore.collection('channels'),
     storageRef: storage.ref(),
+    typingRef: database.ref('typing'),
     uploadeState: '',
     uploadTask: null,
     percentUploaded: 0,
@@ -37,13 +42,15 @@ class MessageInput extends React.Component {
 
   handleChange = event => {
     const { name, value } = event.target
+
     this.setState({
       [name]: value
     })
   }
 
   sendMessage = () => {
-    const { message, loading } = this.state
+    const { message, loading, typingRef } = this.state
+    const { currentUser, currentChannel } = this.props
 
     if (!message || loading) return
 
@@ -55,6 +62,7 @@ class MessageInput extends React.Component {
       .set(this.createMessage({ id: messageRef.id }))
       .then(() => {
         this.setState({ loading: false, message: '' })
+        typingRef.child(currentChannel.id).child(currentUser.uid).remove()
       })
       .catch(err => {
         console.error(err)
@@ -209,6 +217,20 @@ class MessageInput extends React.Component {
       })
   }
 
+  handleKeyDown = () => {
+    const { message, typingRef } = this.state
+    const { currentChannel, currentUser } = this.props
+
+    if (message.length > 2) {
+      typingRef
+        .child(currentChannel.id)
+        .child(currentUser.uid)
+        .set(currentUser.displayName)
+    } else {
+      typingRef.child(currentChannel.id).child(currentUser.uid).remove()
+    }
+  }
+
   render() {
     const { message, loading, modal, percentUploaded, uploadState } = this.state
     const { currentChannel } = this.props
@@ -229,6 +251,7 @@ class MessageInput extends React.Component {
             type="text"
             name="message"
             onChange={this.handleChange}
+            onKeyDown={this.handleKeyDown}
             value={message}
             autocomplete="off"
             placeholder={
