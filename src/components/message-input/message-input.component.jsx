@@ -261,10 +261,13 @@ class MessageInput extends React.Component {
   handleAddEmoji = emoji => {
     const { message } = this.state
     const newMessage = this.colonsToUnicode(`${message}${emoji.colons}`)
-    this.setState({
-      message: newMessage,
-      emojiPicker: false
-    })
+    this.setState(
+      {
+        message: newMessage,
+        emojiPicker: false
+      },
+      () => this.messageInputRef.focus()
+    )
   }
 
   render() {
@@ -303,6 +306,7 @@ class MessageInput extends React.Component {
             <ProgressBar type="progress" max="100" value={percentUploaded} />
           ) : null}
           <InputField
+            ref={node => (this.messageInputRef = node)}
             required
             type="text"
             name="message"
