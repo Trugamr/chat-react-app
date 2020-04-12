@@ -5,14 +5,19 @@ import { MdSend, MdAttachFile } from 'react-icons/md'
 
 import FileUploadModal from '../file-upload-modal/file-upload-modal.component'
 
+import 'emoji-mart/css/emoji-mart.css'
+import { Picker, emojiIndex } from 'emoji-mart'
+
 import {
+  Container,
   MessageInputContainer,
   InputField,
   AttachIcon,
   EmojiIcon,
   SendIcon,
   Spinner,
-  ProgressBar
+  ProgressBar,
+  EmojiPickerContainer
 } from './message-input.styles'
 
 import firebase, {
@@ -32,7 +37,8 @@ class MessageInput extends React.Component {
     message: '',
     loading: false,
     errors: [],
-    modal: false
+    modal: false,
+    emojiPicker: false
   }
 
   handleSubmit = event => {
@@ -221,22 +227,72 @@ class MessageInput extends React.Component {
     const { message, typingRef } = this.state
     const { currentChannel, currentUser } = this.props
 
-    if (message.length > 2) {
+    if (currentChannel && message.length > 1) {
       typingRef
         .child(currentChannel.id)
         .child(currentUser.uid)
         .set(currentUser.displayName)
-    } else {
+    } else if (currentChannel && currentUser) {
       typingRef.child(currentChannel.id).child(currentUser.uid).remove()
     }
   }
 
+  handleTogglePicker = () => {
+    this.setState(({ emojiPicker }) => ({
+      emojiPicker: !emojiPicker
+    }))
+  }
+
+  colonsToUnicode = message => {
+    return message.replace(/:[A-Za-z0-9_+-]+:/g, x => {
+      x = x.replace(/:/g, '')
+      let emoji = emojiIndex.emojis[x]
+      if (typeof emoji !== 'undefined') {
+        let unicode = emoji.native
+        if (typeof unicode !== 'undefined') {
+          return unicode
+        }
+      }
+      x = `:${x}:`
+      return x
+    })
+  }
+
+  handleAddEmoji = emoji => {
+    const { message } = this.state
+    const newMessage = this.colonsToUnicode(`${message}${emoji.colons}`)
+    this.setState({
+      message: newMessage,
+      emojiPicker: false
+    })
+  }
+
   render() {
-    const { message, loading, modal, percentUploaded, uploadState } = this.state
+    const {
+      message,
+      loading,
+      modal,
+      percentUploaded,
+      uploadState,
+      emojiPicker
+    } = this.state
     const { currentChannel } = this.props
 
     return (
-      <>
+      <Container>
+        <EmojiPickerContainer>
+          {emojiPicker && (
+            <Picker
+              className="emojipicker"
+              set="twitter"
+              title="Pick an emoji"
+              emoji="point_up"
+              onSelect={this.handleAddEmoji}
+              style={{ width: '320px' }}
+              color="#007BFF"
+            />
+          )}
+        </EmojiPickerContainer>
         <FileUploadModal
           showing={modal}
           confirm={this.handleConfirm}
@@ -269,7 +325,7 @@ class MessageInput extends React.Component {
           >
             {uploadState === 'uploading' ? <Spinner /> : <MdAttachFile />}
           </AttachIcon>
-          <EmojiIcon type="button">
+          <EmojiIcon type="button" onClick={this.handleTogglePicker}>
             <span role="img" aria-label="smile">
               🙂
             </span>
@@ -278,7 +334,7 @@ class MessageInput extends React.Component {
             {loading ? <Spinner /> : <MdSend />}
           </SendIcon>
         </MessageInputContainer>
-      </>
+      </Container>
     )
   }
 }

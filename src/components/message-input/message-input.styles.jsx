@@ -22,6 +22,22 @@ const iconCSS = css`
   }
 `
 
+export const Container = styled.div`
+  width: 100%;
+  height: 100%;
+  position: relative;
+`
+
+export const EmojiPickerContainer = styled.div`
+  position: absolute;
+  right: 0;
+  top: -370px;
+
+  .emoji-mart-preview {
+    display: none;
+  }
+`
+
 export const MessageInputContainer = styled.form`
   width: 100%;
   height: 60px;
