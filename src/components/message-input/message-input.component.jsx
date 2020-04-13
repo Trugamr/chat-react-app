@@ -41,6 +41,15 @@ class MessageInput extends React.Component {
     emojiPicker: false
   }
 
+  componentWillUnmount() {
+    if (this.state.uploadTask !== null) {
+      this.state.uploadTask.cancel()
+      this.setState({
+        uploadTask: null
+      })
+    }
+  }
+
   handleSubmit = event => {
     event.preventDefault()
     this.sendMessage()
