@@ -10,7 +10,7 @@ import {
 
 import Message from '../message/message.component'
 import Spinner from '../spinner/spinner.component'
-import TypingUsers from '../typing-users/typing-users.container'
+import TypingUsers from '../typing-users/typing-users.component'
 
 import { updateChannelMembers } from '../../redux/chat/chat.actions'
 import { selectMessageSearchFilters } from '../../redux/chat/chat.selectors'
@@ -30,6 +30,15 @@ class Messages extends React.Component {
     if (currentChannel && currentUser) {
       this.addListeners(currentChannel.id, currentChannel.type)
     }
+
+    // scroll messages to bottom
+    if (this.messagesEnd) {
+      this.scrollToBottom()
+    }
+  }
+
+  scrollToBottom = () => {
+    this.messagesEnd.scrollIntoView()
   }
 
   componentWillUnmount() {
