@@ -189,6 +189,7 @@ class Messages extends React.Component {
           ) : (
             <Spinner style={{ backgroundColor: 'transparent' }} />
           )}
+          <span ref={node => (this.messagesEnd = node)} />
         </Container>
 
         {currentChannel && (

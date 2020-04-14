@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import { useTheme } from 'styled-components'
 
-import { FaUser, FaGlobeAsia } from 'react-icons/fa'
+import { FaUser, FaGlobeAsia, FaSun, FaMoon } from 'react-icons/fa'
 import { MdExitToApp } from 'react-icons/md'
 
 import { auth, database, storage } from '../../firebase/firebase.utils'
@@ -16,6 +16,9 @@ import {
 import { setCurrentUser } from '../../redux/user/user.actions'
 
 import { setUserStatus } from '../../redux/user/user.actions'
+
+import { setTheme } from '../../redux/theme/theme.actions'
+import { selectCurrentTheme } from '../../redux/theme/theme.selectors'
 
 import {
   UserAndOptionsContainer,
@@ -52,7 +55,9 @@ const UserStatusCard = ({
   currentUser,
   status,
   setUserStatus,
-  setCurrentUser
+  setCurrentUser,
+  currentTheme,
+  setTheme
 }) => {
   const theme = useTheme()
   const [opened, setOpened] = useState(false)
@@ -123,6 +128,14 @@ const UserStatusCard = ({
       })
   }
 
+  const toggleTheme = () => {
+    if (currentTheme.name === 'light') {
+      setTheme('dark')
+    } else {
+      setTheme('light')
+    }
+  }
+
   const { displayName, photoURL } = currentUser
 
   return (
@@ -177,6 +190,21 @@ const UserStatusCard = ({
           <FaUser color={theme.userStatusCard.icon} />
           <span>change avatar</span>
         </li>
+
+        <li onClick={() => toggleTheme()}>
+          {currentTheme.name === 'light' ? (
+            <>
+              <FaMoon color={theme.userStatusCard.icon} />
+              <span>toggle theme</span>
+            </>
+          ) : (
+            <>
+              <FaSun color={theme.userStatusCard.icon} />
+              <span>toggle theme</span>
+            </>
+          )}
+        </li>
+
         <li onClick={handleSignout}>
           <MdExitToApp color={theme.userStatusCard.icon} />
           <span>log out</span>
@@ -188,12 +216,14 @@ const UserStatusCard = ({
 
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
-  status: selectUserStatus
+  status: selectUserStatus,
+  currentTheme: selectCurrentTheme
 })
 
 const mapDispatchToProps = dispatch => ({
   setUserStatus: status => dispatch(setUserStatus(status)),
-  setCurrentUser: user => dispatch(setCurrentUser(user))
+  setCurrentUser: user => dispatch(setCurrentUser(user)),
+  setTheme: themeName => dispatch(setTheme(themeName))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserStatusCard)

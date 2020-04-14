@@ -95,7 +95,7 @@ export const Line = styled.hr`
 `
 
 export const Options = styled.ul`
-  max-height: ${({ opened }) => (opened ? '140px' : '0px')};
+  max-height: ${({ opened }) => (opened ? '180px' : '0px')};
   width: 100%;
   background-color: ${({ theme }) => theme.userStatusCard.bg};
   position: absolute;
