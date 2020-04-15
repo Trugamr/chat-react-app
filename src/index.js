@@ -9,7 +9,7 @@ import { auth } from './firebase/firebase.utils'
 
 import CustomThemeProvider from './components/custom-theme-provider/custom-theme-provider.component'
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Switch,
   Route,
   withRouter
@@ -77,7 +77,7 @@ ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <CustomThemeProvider>
-        <Router>
+        <Router basename="/">
           <RootWithRouter />
         </Router>
       </CustomThemeProvider>
