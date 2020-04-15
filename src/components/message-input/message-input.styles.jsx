@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components'
+import { Picker } from 'emoji-mart'
 
 const iconCSS = css`
   height: 100%;
@@ -139,3 +140,5 @@ export const ProgressBar = styled.progress`
     border-radius: 14px;
   }
 `
+
+export const EmojiPicker = styled(Picker)``

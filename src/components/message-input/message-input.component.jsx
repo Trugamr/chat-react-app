@@ -1,4 +1,6 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { createStructuredSelector } from 'reselect'
 import { v4 as uuidv4 } from 'uuid'
 
 import { MdSend, MdAttachFile } from 'react-icons/md'
@@ -6,7 +8,7 @@ import { MdSend, MdAttachFile } from 'react-icons/md'
 import FileUploadModal from '../file-upload-modal/file-upload-modal.component'
 
 import 'emoji-mart/css/emoji-mart.css'
-import { Picker, emojiIndex } from 'emoji-mart'
+import { emojiIndex } from 'emoji-mart'
 
 import {
   Container,
@@ -14,6 +16,7 @@ import {
   InputField,
   AttachIcon,
   EmojiIcon,
+  EmojiPicker,
   SendIcon,
   Spinner,
   ProgressBar,
@@ -25,6 +28,8 @@ import firebase, {
   storage,
   database
 } from '../../firebase/firebase.utils'
+
+import { selectCurrentTheme } from '../../redux/theme/theme.selectors'
 
 class MessageInput extends React.Component {
   state = {
@@ -288,19 +293,23 @@ class MessageInput extends React.Component {
       uploadState,
       emojiPicker
     } = this.state
-    const { currentChannel } = this.props
+    const { currentChannel, theme } = this.props
 
     return (
       <Container>
         <EmojiPickerContainer>
           {emojiPicker && (
-            <Picker
+            <EmojiPicker
               className="emojipicker"
               set="twitter"
               title="Pick an emoji"
               emoji="point_up"
               onSelect={this.handleAddEmoji}
-              style={{ width: '320px' }}
+              style={{
+                width: '320px'
+              }}
+              theme={theme.name === 'dark' ? 'dark' : 'light'}
+              themeObj={theme}
               color="#007BFF"
             />
           )}
@@ -352,4 +361,8 @@ class MessageInput extends React.Component {
   }
 }
 
-export default MessageInput
+const mapStateToProps = createStructuredSelector({
+  theme: selectCurrentTheme
+})
+
+export default connect(mapStateToProps)(MessageInput)
