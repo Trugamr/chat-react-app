@@ -164,7 +164,7 @@ class MessageInput extends React.Component {
   getPath = () => {
     const { currentChannel } = this.props
     if (currentChannel && currentChannel.type === 'direct') {
-      return `chat/private-${currentChannel.id}`
+      return `chat/private/${currentChannel.id}`
     } else {
       return 'chat/public'
     }
