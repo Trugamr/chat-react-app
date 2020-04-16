@@ -1,6 +1,6 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { auth, firestore, storage } from '../../firebase/firebase.utils'
-import md5 from 'md5'
 
 import {
   RegisterPageContainer,
@@ -17,6 +17,10 @@ import CustomLink from '../../components/custom-link/custom-link.component'
 
 import { FaUserAlt, FaLock } from 'react-icons/fa'
 import { MdEmail } from 'react-icons/md'
+
+import { setCurrentUser } from '../../redux/user/user.actions'
+
+import avatarBlob from '../../resources/images/avatar.blob'
 
 class RegisterPage extends React.Component {
   state = {
@@ -63,6 +67,7 @@ class RegisterPage extends React.Component {
     event.preventDefault()
 
     const { username, email, password, loading } = this.state
+    const { setCurrentUser } = this.props
 
     if (!this.isFormValid() || loading) return
 
@@ -73,10 +78,16 @@ class RegisterPage extends React.Component {
       .then(async createdUser => {
         console.log(createdUser)
 
-        const avatarURL = await this.getAvatarUrl({
-          email,
-          uid: createdUser.user.uid
-        })
+        let avatarURL = null
+
+        try {
+          avatarURL = await this.getAvatarUrl({
+            email,
+            uid: createdUser.user.uid
+          })
+        } catch (err) {
+          console.error(err)
+        }
 
         createdUser.user
           .updateProfile({
@@ -85,6 +96,7 @@ class RegisterPage extends React.Component {
           })
           .then(() => {
             this.saveUser(createdUser).then(() => {
+              setCurrentUser({ ...createdUser.user })
               console.log('user saved')
               // register success
             })
@@ -126,24 +138,14 @@ class RegisterPage extends React.Component {
     return errors.some(error => error.message.toLowerCase().includes(inputName))
   }
 
-  getAvatarUrl = ({ email, uid }) => {
+  getAvatarUrl = ({ uid }) => {
     return new Promise((resolve, reject) => {
-      fetch(`https://gravatar.com/avatar/${md5(email)}?d=retro`, {
-        mode: 'cors'
-      })
-        .then(res => res.blob())
-        .then(blob => {
-          storage
-            .ref()
-            .child(`avatars/user-${uid}`)
-            .put(blob, { contentType: 'image/jpeg' })
-            .then(snapshot => {
-              snapshot.ref.getDownloadURL().then(url => resolve(url))
-            })
-            .catch(err => {
-              console.error(err)
-              reject(err)
-            })
+      storage
+        .ref()
+        .child(`avatars/users/${uid}`)
+        .put(avatarBlob, { contentType: 'image/jpeg' })
+        .then(snapshot => {
+          snapshot.ref.getDownloadURL().then(url => resolve(url))
         })
         .catch(err => {
           console.error(err)
@@ -224,4 +226,8 @@ class RegisterPage extends React.Component {
   }
 }
 
-export default RegisterPage
+const mapDispatchToProps = dispatch => ({
+  setCurrentUser: user => dispatch(setCurrentUser(user))
+})
+
+export default connect(null, mapDispatchToProps)(RegisterPage)

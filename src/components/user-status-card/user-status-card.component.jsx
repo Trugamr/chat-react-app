@@ -121,7 +121,7 @@ const UserStatusCard = ({
   const uploadCroppedImage = imageBlob => {
     storage
       .ref()
-      .child(`avatars/user-${currentUser.uid}`)
+      .child(`avatars/users/${currentUser.uid}`)
       .put(imageBlob, { contentType: 'image/jpeg' })
       .then(snapshot => {
         snapshot.ref.getDownloadURL().then(url => updateAvatarImage(url))
