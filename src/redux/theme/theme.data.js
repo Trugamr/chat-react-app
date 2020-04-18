@@ -45,7 +45,8 @@ export const light = {
     textSecondary: colors.littleLightGray
   },
   messages: {
-    bg: colors.white
+    bg: colors.white,
+    placeholder: colors.littleLightGray
   },
   typingUsers: {
     itemBg: colors.veryLightGray,
@@ -189,7 +190,8 @@ export const dark = {
     textSecondary: colors.lightWhite
   },
   messages: {
-    bg: colors.darkerBlack
+    bg: colors.darkerBlack,
+    placeholder: colors.lightWhite
   },
   typingUsers: {
     itemBg: colors.littleDarkerBlack,

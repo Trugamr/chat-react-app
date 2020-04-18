@@ -5,7 +5,8 @@ import { connect } from 'react-redux'
 import {
   MessagesContainer,
   Container,
-  TypingContainer
+  TypingContainer,
+  EmptyPlaceholder
 } from './messages.styles'
 
 import Message from '../message/message.component'
@@ -182,6 +183,14 @@ class Messages extends React.Component {
     return (
       <MessagesContainer>
         <Container>
+          {currentChannel &&
+          messages[currentChannel.id] &&
+          !loading &&
+          !messages[currentChannel.id].length ? (
+            <EmptyPlaceholder>
+              <span>There are no messages to show here :(</span>
+            </EmptyPlaceholder>
+          ) : null}
           {currentChannel && !loading ? (
             this.displayMessages(
               this.filterMessages(messages[currentChannel.id])

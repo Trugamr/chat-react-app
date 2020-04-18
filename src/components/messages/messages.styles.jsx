@@ -65,3 +65,17 @@ export const TypingContainer = styled.div`
   align-self: flex-end;
   width: 100%;
 `
+
+export const EmptyPlaceholder = styled.div`
+  width: 100%;
+  height: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'archiabold';
+  font-size: 24px;
+
+  span {
+    color: ${({ theme }) => theme.messages.placeholder};
+  }
+`
