@@ -4,6 +4,15 @@ export const MetaPanelContainer = styled.div`
   width: 100%;
   height: 100%;
   padding: 14px 14px 14px 0px;
+
+  @media only screen and (max-width: 1100px) {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 280px;
+
+    transform: translateX(280px);
+  }
 `
 
 export const Meta = styled.div`

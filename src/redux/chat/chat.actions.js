@@ -34,3 +34,13 @@ export const setStarredChannels = starredChannels => ({
   type: ChatActionTypes.SET_STARRED_CHANNELS,
   payload: starredChannels
 })
+
+export const toggleSidebar = boolean => ({
+  type: ChatActionTypes.TOGGLE_SIDEBAR,
+  payload: boolean
+})
+
+export const toggleMeta = boolean => ({
+  type: ChatActionTypes.TOGGLE_META,
+  payload: boolean
+})

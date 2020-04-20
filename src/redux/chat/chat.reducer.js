@@ -9,7 +9,10 @@ const INITIAL_STATE = {
   },
   isPrivateChannel: false,
   otherUsersStatus: {},
-  starredChannels: null
+  starredChannels: null,
+  // for small screens
+  sidebarShowing: false,
+  metaShowing: false
 }
 
 const chatReducer = (state = INITIAL_STATE, action) => {
@@ -52,6 +55,22 @@ const chatReducer = (state = INITIAL_STATE, action) => {
         ...state,
         starredChannels: action.payload
       }
+    case ChatActionTypes.TOGGLE_SIDEBAR: {
+      const toggled =
+        action.payload !== undefined ? action.payload : !state.sidebarShowing
+      return {
+        ...state,
+        sidebarShowing: toggled
+      }
+    }
+    case ChatActionTypes.TOGGLE_META: {
+      const toggled =
+        action.payload !== undefined ? action.payload : !state.metaShowing
+      return {
+        ...state,
+        metaShowing: toggled
+      }
+    }
     default:
       return state
   }

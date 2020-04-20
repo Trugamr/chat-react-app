@@ -38,7 +38,12 @@ export const light = {
     fgHover: colors.littleLightGray
   },
   sidePanel: {
-    bg: colors.white
+    bg: colors.white,
+    shadow: colors.lightBlue,
+    closeButton: {
+      bg: colors.lightBlue,
+      text: colors.blue
+    }
   },
   message: {
     textPrimary: colors.black,
@@ -68,7 +73,8 @@ export const light = {
   channelHeader: {
     bg: colors.white,
     text: colors.black,
-    icon: colors.yellow,
+    starIcon: colors.yellow,
+    sidebarIcon: colors.blue,
     search: {
       text: colors.gray,
       placeholder: colors.littleLightGray,
@@ -183,7 +189,12 @@ export const dark = {
     fgHover: colors.littleLightGray
   },
   sidePanel: {
-    bg: colors.darkerBlack
+    bg: colors.darkerBlack,
+    shadow: colors.lightBlue,
+    closeButton: {
+      bg: colors.lightBlue,
+      text: colors.blue
+    }
   },
   message: {
     textPrimary: colors.white,
@@ -213,7 +224,8 @@ export const dark = {
   channelHeader: {
     bg: colors.darkerBlack,
     text: colors.white,
-    icon: colors.yellow,
+    starIcon: colors.yellow,
+    sidebarIcon: colors.blue,
     search: {
       text: colors.white,
       placeholder: colors.littleWhite,

@@ -21,11 +21,38 @@ export const ChannelInfo = styled.div`
   justify-content: center;
 `
 
-export const Heading = styled.h2`
-  font-size: 30px;
+export const SidebarButton = styled.button`
+  background: ${({ theme }) => theme.channelHeader.search.bg};
+  outline: none;
+  border: 0px;
+  padding: 4px;
+  border-radius: 4px;
+  margin-right: 8px;
+  margin-left: 0px !important;
+  font-size: 22px;
+  justify-content: center;
+  align-items: center;
+  display: none;
 
   svg {
-    color: ${({ theme }) => theme.channelHeader.icon};
+    color: ${({ theme }) => theme.channelHeader.sidebarIcon} !important;
+  }
+
+  @media only screen and (max-width: 768px) {
+    display: flex;
+  }
+`
+
+export const Heading = styled.h2`
+  display: flex;
+  align-items: center;
+  font-size: 30px;
+  span {
+    margin-right: 4px;
+  }
+
+  svg {
+    color: ${({ theme }) => theme.channelHeader.starIcon};
     cursor: pointer;
   }
 `
@@ -34,10 +61,18 @@ export const About = styled.p`
   margin-top: 12px;
   margin-bottom: 2px;
   opacity: 0.8;
+
+  @media only screen and (max-width: 768px) {
+    display: none;
+  }
 `
 
 export const Members = styled.span`
   font-size: 14px;
+
+  @media only screen and (max-width: 768px) {
+    display: none;
+  }
 `
 
 export const SearchFieldContainer = styled.div`

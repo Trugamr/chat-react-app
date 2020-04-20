@@ -48,6 +48,6 @@ export const Content = styled.p`
   img {
     border-radius: 14px;
     margin-top: 4px;
-    max-width: 400px;
+    max-width: 320px;
   }
 `

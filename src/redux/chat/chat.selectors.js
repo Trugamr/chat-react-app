@@ -36,3 +36,15 @@ export const selectStarredChannes = createSelector(
   [selectChat],
   chat => chat.starredChannels
 )
+
+// for mobile views
+
+export const selectSidebarShowing = createSelector(
+  [selectChat],
+  chat => chat.sidebarShowing
+)
+
+export const selectMetaShowing = createSelector(
+  [selectChat],
+  chat => chat.metaShowing
+)

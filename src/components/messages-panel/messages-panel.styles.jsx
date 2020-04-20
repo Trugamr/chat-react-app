@@ -7,4 +7,8 @@ export const MessagesPanelContainer = styled.div`
   display: grid;
   grid-gap: 14px;
   grid-template-rows: 120px auto 60px;
+
+  @media only screen and (max-width: 768px) {
+    grid-template-rows: 80px auto 60px;
+  }
 `

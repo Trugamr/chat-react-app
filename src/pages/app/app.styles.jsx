@@ -6,4 +6,12 @@ export const AppContainer = styled.div`
   display: grid;
   grid-template-columns: minmax(260px, 25%) auto 25%;
   background-color: ${({ theme }) => theme.bg};
+
+  @media only screen and (max-width: 1100px) {
+    grid-template-columns: minmax(260px, 25%) auto 0px;
+  }
+
+  @media only screen and (max-width: 768px) {
+    display: flex;
+  }
 `
