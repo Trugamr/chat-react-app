@@ -18,6 +18,7 @@ const MessagesPanel = ({ currentUser, currentChannel }) => {
         currentUser={currentUser}
         currentChannel={currentChannel}
       />
+      {/* <div style={{ background: 'red' }} /> */}
       <Messages currentUser={currentUser} currentChannel={currentChannel} />
       <MessageInput currentUser={currentUser} currentChannel={currentChannel} />
     </MessagesPanelContainer>

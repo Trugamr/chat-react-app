@@ -11,6 +11,10 @@ export const ChannelHeaderContainer = styled.div`
   font-family: 'archiasemibold';
   background-color: ${({ theme: { channelHeader } }) => channelHeader.bg};
   color: ${({ theme: { channelHeader } }) => channelHeader.text};
+
+  @media only screen and (max-width: 768px) {
+    grid-template-columns: auto 0px;
+  }
 `
 
 export const ChannelInfo = styled.div`
@@ -81,6 +85,10 @@ export const SearchFieldContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @media only screen and (max-width: 768px) {
+    display: none;
+  }
 `
 
 export const Search = styled.div`

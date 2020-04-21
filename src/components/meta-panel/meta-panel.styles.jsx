@@ -2,6 +2,7 @@ import styled from 'styled-components'
 
 export const MetaPanelContainer = styled.div`
   width: 100%;
+  max-width: 280px;
   height: 100%;
   padding: 14px 14px 14px 0px;
 
