@@ -5,14 +5,19 @@ export const MetaPanelContainer = styled.div`
   max-width: 280px;
   height: 100%;
   padding: 14px 14px 14px 0px;
+  transition: ease-in-out transform 200ms;
 
   @media only screen and (max-width: 1100px) {
+    padding: 0px;
     position: fixed;
+    z-index: 10;
     top: 0;
     right: 0;
     width: 280px;
-
-    transform: translateX(280px);
+    background-color: ${({ theme }) => theme.meta.bg};
+    box-shadow: 0px 0px 10px 5px ${({ theme }) => theme.meta.shadow};
+    transform: ${({ metaShowing }) =>
+      metaShowing ? 'translateX(0px)' : 'translateX(300px)'};
   }
 `
 
@@ -22,6 +27,10 @@ export const Meta = styled.div`
   background-color: ${({ theme }) => theme.meta.bg};
   border-radius: 14px;
   padding: 14px 20px;
+
+  @media only screen and (max-width: 1100px) {
+    border-radius: 0px;
+  }
 
   h2 {
     font-family: 'archiasemibold';
@@ -33,6 +42,27 @@ export const Meta = styled.div`
     font-family: 'archiaregular';
     color: ${({ theme }) => theme.meta.textSecondary};
     font-size: 16px;
+  }
+`
+
+export const CloseMeta = styled.div`
+  color: ${({ theme }) => theme.meta.closeButton.text};
+  background-color: ${({ theme }) => theme.meta.closeButton.bg};
+  font-family: 'archiabold';
+  padding: 8px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  margin: 14px 14px 0px 14px;
+
+  span {
+    margin-left: 8px;
+  }
+
+  cursor: pointer;
+
+  @media only screen and (min-width: 1100px) {
+    display: none;
   }
 `
 

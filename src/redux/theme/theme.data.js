@@ -75,6 +75,7 @@ export const light = {
     text: colors.black,
     starIcon: colors.yellow,
     sidebarIcon: colors.blue,
+    infoIcon: colors.blue,
     search: {
       text: colors.gray,
       placeholder: colors.littleLightGray,
@@ -142,7 +143,12 @@ export const light = {
   meta: {
     bg: colors.white,
     textPrimary: colors.black,
-    textSecondary: colors.gray
+    textSecondary: colors.gray,
+    shadow: colors.lightBlue,
+    closeButton: {
+      bg: colors.lightBlue,
+      text: colors.blue
+    }
   },
   spinner: {
     bg: colors.lightest,
@@ -226,6 +232,7 @@ export const dark = {
     text: colors.white,
     starIcon: colors.yellow,
     sidebarIcon: colors.blue,
+    infoIcon: colors.blue,
     search: {
       text: colors.white,
       placeholder: colors.littleWhite,
@@ -293,7 +300,12 @@ export const dark = {
   meta: {
     bg: colors.darkerBlack,
     textPrimary: colors.white,
-    textSecondary: colors.lightWhite
+    textSecondary: colors.lightWhite,
+    shadow: colors.lightBlue,
+    closeButton: {
+      bg: colors.lightBlue,
+      text: colors.blue
+    }
   },
   spinner: {
     bg: colors.littleDarkerBlack,

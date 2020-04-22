@@ -2,7 +2,14 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 
-import { FaStar, FaRegStar, FaSearch, FaTimes, FaBars } from 'react-icons/fa'
+import {
+  FaStar,
+  FaRegStar,
+  FaSearch,
+  FaTimes,
+  FaBars,
+  FaInfoCircle
+} from 'react-icons/fa'
 
 import Spinner from '../spinner/spinner.component'
 
@@ -18,7 +25,8 @@ import {
   UserStatus,
   Dot,
   Status,
-  SidebarButton
+  SidebarButton,
+  InfoToggle
 } from './channel-header.styles'
 
 import {
@@ -30,7 +38,8 @@ import {
 import {
   setMessageSearchFilters,
   setStarredChannels,
-  toggleSidebar
+  toggleSidebar,
+  toggleMeta
 } from '../../redux/chat/chat.actions'
 
 import { firestore } from '../../firebase/firebase.utils'
@@ -153,7 +162,8 @@ class ChannelHeader extends React.Component {
       currentChannel,
       members,
       privateChannel,
-      toggleSidebar
+      toggleSidebar,
+      toggleMeta
     } = this.props
     const { filters } = this.state
 
@@ -210,6 +220,9 @@ class ChannelHeader extends React.Component {
                   <FaSearch />
                 )}
               </Search>
+              <InfoToggle onClick={() => toggleMeta()}>
+                <FaInfoCircle />
+              </InfoToggle>
             </SearchFieldContainer>
           </>
         ) : (
@@ -233,7 +246,8 @@ const mapDispatchToProps = dispatch => ({
     dispatch(setMessageSearchFilters(filters)),
   setStarredChannels: starredChannels =>
     dispatch(setStarredChannels(starredChannels)),
-  toggleSidebar: boolean => dispatch(toggleSidebar(boolean))
+  toggleSidebar: boolean => dispatch(toggleSidebar(boolean)),
+  toggleMeta: boolean => dispatch(toggleMeta(boolean))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ChannelHeader)

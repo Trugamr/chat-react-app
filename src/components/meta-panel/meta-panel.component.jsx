@@ -7,8 +7,11 @@ import moment from 'moment'
 import {
   selectCurrentChannel,
   selectChannelMembers,
-  selectIsPrivateChannel
+  selectIsPrivateChannel,
+  selectMetaShowing
 } from '../../redux/chat/chat.selectors'
+
+import { toggleMeta } from '../../redux/chat/chat.actions'
 
 import {
   MetaPanelContainer,
@@ -18,15 +21,28 @@ import {
   CreatedOn,
   ActiveMembers,
   Member,
-  Info
+  Info,
+  CloseMeta
 } from './meta-panel.styles'
+
+import { FaArrowRight } from 'react-icons/fa'
 
 const formatTime = timestamp =>
   moment(timestamp.toDate()).format('Do MMM, YYYY')
 
-const MetaPanel = ({ currentChannel, channelMembers, isPrivateChannel }) => {
+const MetaPanel = ({
+  currentChannel,
+  channelMembers,
+  isPrivateChannel,
+  metaShowing,
+  toggleMeta
+}) => {
   return (
-    <MetaPanelContainer>
+    <MetaPanelContainer metaShowing={metaShowing}>
+      <CloseMeta onClick={() => toggleMeta(false)}>
+        <FaArrowRight />
+        <span>CLOSE</span>
+      </CloseMeta>
       <Meta>
         {currentChannel && !isPrivateChannel ? (
           <>
@@ -74,7 +90,12 @@ const MetaPanel = ({ currentChannel, channelMembers, isPrivateChannel }) => {
 const mapStateToProps = createStructuredSelector({
   currentChannel: selectCurrentChannel,
   channelMembers: selectChannelMembers,
-  isPrivateChannel: selectIsPrivateChannel
+  isPrivateChannel: selectIsPrivateChannel,
+  metaShowing: selectMetaShowing
 })
 
-export default connect(mapStateToProps)(MetaPanel)
+const mapDispatchToProps = dispatch => ({
+  toggleMeta: boolean => dispatch(toggleMeta(boolean))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(MetaPanel)

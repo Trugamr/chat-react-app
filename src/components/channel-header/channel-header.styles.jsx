@@ -85,10 +85,6 @@ export const SearchFieldContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-
-  @media only screen and (max-width: 768px) {
-    display: none;
-  }
 `
 
 export const Search = styled.div`
@@ -104,6 +100,10 @@ export const Search = styled.div`
     bottom: 0;
     margin: auto;
     cursor: pointer;
+  }
+
+  @media only screen and (max-width: 768px) {
+    display: none;
   }
 `
 
@@ -151,4 +151,23 @@ export const Status = styled.p`
   margin-left: 5px;
   text-transform: capitalize;
   opacity: 0.8;
+`
+
+export const InfoToggle = styled.button`
+  font-size: 24px;
+  outline: none;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  height: 100%;
+  padding: 6px;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  margin-left: 8px;
+  color: ${({ theme }) => theme.channelHeader.infoIcon};
+
+  @media only screen and (max-width: 1100px) {
+    display: flex;
+  }
 `
