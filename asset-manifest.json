@@ -1,26 +1,26 @@
 {
   "files": {
-    "main.css": "/chat-react-app/static/css/main.6132347f.chunk.css",
-    "main.js": "/chat-react-app/static/js/main.a160d416.chunk.js",
-    "main.js.map": "/chat-react-app/static/js/main.a160d416.chunk.js.map",
-    "runtime-main.js": "/chat-react-app/static/js/runtime-main.171b3eab.js",
-    "runtime-main.js.map": "/chat-react-app/static/js/runtime-main.171b3eab.js.map",
+    "main.css": "/chat-react-app/static/css/main.c09e3f47.chunk.css",
+    "main.js": "/chat-react-app/static/js/main.d6d81801.chunk.js",
+    "main.js.map": "/chat-react-app/static/js/main.d6d81801.chunk.js.map",
+    "runtime-main.js": "/chat-react-app/static/js/runtime-main.b236d73c.js",
+    "runtime-main.js.map": "/chat-react-app/static/js/runtime-main.b236d73c.js.map",
     "static/css/2.c2bc211b.chunk.css": "/chat-react-app/static/css/2.c2bc211b.chunk.css",
-    "static/js/2.3d3d4302.chunk.js": "/chat-react-app/static/js/2.3d3d4302.chunk.js",
-    "static/js/2.3d3d4302.chunk.js.map": "/chat-react-app/static/js/2.3d3d4302.chunk.js.map",
+    "static/js/2.ea4896c2.chunk.js": "/chat-react-app/static/js/2.ea4896c2.chunk.js",
+    "static/js/2.ea4896c2.chunk.js.map": "/chat-react-app/static/js/2.ea4896c2.chunk.js.map",
     "index.html": "/chat-react-app/index.html",
-    "precache-manifest.32181e991c0fcbe824580c539acd2b36.js": "/chat-react-app/precache-manifest.32181e991c0fcbe824580c539acd2b36.js",
+    "precache-manifest.671675b8d76604406324e096790af15e.js": "/chat-react-app/precache-manifest.671675b8d76604406324e096790af15e.js",
     "service-worker.js": "/chat-react-app/service-worker.js",
     "static/css/2.c2bc211b.chunk.css.map": "/chat-react-app/static/css/2.c2bc211b.chunk.css.map",
-    "static/css/main.6132347f.chunk.css.map": "/chat-react-app/static/css/main.6132347f.chunk.css.map",
-    "static/js/2.3d3d4302.chunk.js.LICENSE.txt": "/chat-react-app/static/js/2.3d3d4302.chunk.js.LICENSE.txt",
+    "static/css/main.c09e3f47.chunk.css.map": "/chat-react-app/static/css/main.c09e3f47.chunk.css.map",
+    "static/js/2.ea4896c2.chunk.js.LICENSE.txt": "/chat-react-app/static/js/2.ea4896c2.chunk.js.LICENSE.txt",
     "static/media/index.scss": "/chat-react-app/static/media/archia-thin-webfont.e88f1cf3.woff2"
   },
   "entrypoints": [
-    "static/js/runtime-main.171b3eab.js",
+    "static/js/runtime-main.b236d73c.js",
     "static/css/2.c2bc211b.chunk.css",
-    "static/js/2.3d3d4302.chunk.js",
-    "static/css/main.6132347f.chunk.css",
-    "static/js/main.a160d416.chunk.js"
+    "static/js/2.ea4896c2.chunk.js",
+    "static/css/main.c09e3f47.chunk.css",
+    "static/js/main.d6d81801.chunk.js"
   ]
 }
